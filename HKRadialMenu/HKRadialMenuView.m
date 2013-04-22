@@ -29,6 +29,7 @@
 
 #import "HKRadialMenuView.h"
 #import "HKRadialMenuItemView.h"
+#import "NSNumber+Trigonometry.h"
 
 #define TWO_PI M_PI * 2.0f
 
@@ -45,6 +46,8 @@ static const float k2Pi = TWO_PI;
 - (void)createCenterView;
 - (void)createItems;
 - (void)centerViewTapped:(UITapGestureRecognizer *)tapRecognizer;
+
++ (CGFloat)normalizeAngle:(CGFloat)angle;
 
 @end
 
@@ -74,8 +77,8 @@ static const float k2Pi = TWO_PI;
 
 - (void)defaultInit
 {
-    CGFloat start = M_PI + M_PI_2;
-    CGFloat end = start + k2Pi;
+    CGFloat start = 0;
+    CGFloat end = k2Pi;
     self.angleRange = CGPointMake(start, end);
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -90,8 +93,25 @@ static const float k2Pi = TWO_PI;
     [self hideItemsAnimated:NO];
 }
 
++ (CGFloat)normalizeAngle:(CGFloat)angle
+{
+    if (angle < .0f)
+    {
+        angle += k2Pi;
+    }
+    if (angle > k2Pi)
+    {
+        angle = fmod(angle, k2Pi);
+    }
+
+    return angle;
+}
+
 - (void)setAngleRange:(CGPoint)angleRange
 {
+    angleRange.x = [HKRadialMenuView normalizeAngle:angleRange.x];
+    angleRange.y = [HKRadialMenuView normalizeAngle:angleRange.y];
+    
     if (CGPointEqualToPoint(angleRange, _angleRange))
         return;
 
@@ -208,7 +228,7 @@ static const float k2Pi = TWO_PI;
         return;
     
     CGFloat deltaAngle = (self.angleRange.y - self.angleRange.x) / (CGFloat)nbItems;
-    CGFloat angle = self.angleRange.x + deltaAngle * .5;
+    CGFloat angle = self.angleRange.x;
     for (NSUInteger i = 0; i < nbItems; ++i)
     {
         CGFloat distance = [self.delegate distanceForItemInRadialMenuView:self

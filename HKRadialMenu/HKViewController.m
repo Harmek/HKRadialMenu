@@ -49,30 +49,36 @@
     UISlider *startSlider = [[UISlider alloc] initWithFrame:CGRectMake(18, 49, 284, 23)];
     startSlider.minimumValue = 0;
     startSlider.maximumValue = M_PI * 2;
-    startSlider.value = 0;
+    startSlider.value = self.radialMenuView.angleRange.x;
     [startSlider addTarget:self action:@selector(startSliderChanged:) forControlEvents:UIControlEventValueChanged];
 
     UISlider *endSlider = [[UISlider alloc] initWithFrame:CGRectMake(18, 79, 284, 23)];
     endSlider.minimumValue = 0;
     endSlider.maximumValue = startSlider.maximumValue;
-    endSlider.value = endSlider.maximumValue;
+    endSlider.value = self.radialMenuView.angleRange.y;
     [endSlider addTarget:self action:@selector(endSliderChanged:) forControlEvents:UIControlEventValueChanged];
 
     [self.view addSubview:label];
     [self.view addSubview:startSlider];
     [self.view addSubview:endSlider];
-    HKRadialMenuView *radialView = self.radialMenuView;
-    radialView.delayBetweenAnimations = .1;
+
+    self.radialMenuView.delayBetweenAnimations = .1;
 }
 
 - (void)startSliderChanged:(UISlider *)slider
 {
-    self.radialMenuView.angleRange = CGPointMake(slider.value, self.radialMenuView.angleRange.y);
+    CGPoint range = self.radialMenuView.angleRange;
+    range.x = slider.value;
+    NSLog(@"%f, %f", range.x, range.y);
+    self.radialMenuView.angleRange = range;
 }
 
 - (void)endSliderChanged:(UISlider *)slider
 {
-    self.radialMenuView.angleRange = CGPointMake(self.radialMenuView.angleRange.x, slider.value);
+    CGPoint range = self.radialMenuView.angleRange;
+    range.y = slider.value;
+    NSLog(@"%f, %f", range.x, range.y);
+    self.radialMenuView.angleRange = range;
 }
 
 - (NSUInteger)numberOfItemsInRadialMenuView:(HKRadialMenuView *)radialMenuView
