@@ -28,6 +28,7 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 
 #import "HKRadialMenuView.h"
+#import "HKRadialMenuItemView.h"
 
 #define TWO_PI M_PI * 2.0f
 
@@ -73,6 +74,9 @@ static const float k2Pi = TWO_PI;
 
 - (void)defaultInit
 {
+    CGFloat start = M_PI + M_PI_2;
+    CGFloat end = start + k2Pi;
+    self.angleRange = CGPointMake(start, end);
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(onOrientationChanged:)
@@ -86,6 +90,16 @@ static const float k2Pi = TWO_PI;
     [self hideItemsAnimated:NO];
 }
 
+- (void)setAngleRange:(CGPoint)angleRange
+{
+    if (CGPointEqualToPoint(angleRange, _angleRange))
+        return;
+
+    _angleRange = angleRange;
+    if (self.itemsVisible)
+        [self revealItemsAnimated:YES];
+}
+
 - (void)createCenterView
 {
     if (self.centerView)
@@ -94,9 +108,10 @@ static const float k2Pi = TWO_PI;
         self.centerView = nil;
     }
 
-    UIView *centerView = [self.dataSource centerViewForRadialMenuView:self];
+    HKRadialMenuItemView *centerView = [self.dataSource centerItemViewForRadialMenuView:self];
     if (centerView)
     {
+        [centerView recenterLayout];
         CGRect frame = centerView.frame;
         CGPoint center = self.center;
         frame.origin.x = center.x - frame.size.width * .5;
@@ -141,9 +156,11 @@ static const float k2Pi = TWO_PI;
     NSMutableArray *items = [[NSMutableArray alloc] initWithCapacity:nbItems];
     for (NSUInteger i = 0; i < nbItems; ++i)
     {
-        UIView *itemView = [self.dataSource viewForItemInRadialMenuView:self atIndex:i];
+        HKRadialMenuItemView *itemView = [self.dataSource itemViewInRadialMenuView:self
+                                                                           atIndex:i];
         if (itemView)
         {
+            [itemView recenterLayout];
             itemView.alpha = .0;
             CGRect frame = itemView.frame;
             CGPoint center = self.center;
@@ -163,6 +180,7 @@ static const float k2Pi = TWO_PI;
             [self addSubview:itemView];
         }
     }
+    
     self.items = items;
     self.itemsVisible = NO;
 }
@@ -189,8 +207,8 @@ static const float k2Pi = TWO_PI;
     if (!nbItems)
         return;
     
-    CGFloat deltaAngle = k2Pi / (CGFloat)nbItems;
-    CGFloat angle = M_PI + M_PI_2 - deltaAngle * .5;
+    CGFloat deltaAngle = (self.angleRange.y - self.angleRange.x) / (CGFloat)nbItems;
+    CGFloat angle = self.angleRange.x + deltaAngle * .5;
     for (NSUInteger i = 0; i < nbItems; ++i)
     {
         CGFloat distance = [self.delegate distanceForItemInRadialMenuView:self

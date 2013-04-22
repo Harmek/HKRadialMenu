@@ -1,5 +1,5 @@
 //
-//  HKRadialMenuView.h
+//  HKRadialMenuItemView.h
 //  HKRadialMenu
 //
 //  Copyright (c) 2013, Panos Baroudjian.
@@ -29,37 +29,19 @@
 
 #import <UIKit/UIKit.h>
 
-@class HKRadialMenuView;
-@class HKRadialMenuItemView;
-@protocol HKRadialMenuViewDataSource <NSObject>
+typedef NS_ENUM(NSInteger, HKRadialMenuItemStyle)
+{
+    HKRadialMenuItemStyleDefault,
+    HKRadialMenuItemStyleSubtitle
+};
 
-- (NSUInteger)numberOfItemsInRadialMenuView:(HKRadialMenuView *)radialMenuView;
-- (HKRadialMenuItemView *)centerItemViewForRadialMenuView:(HKRadialMenuView *)radialMenuView;
-- (HKRadialMenuItemView *)itemViewInRadialMenuView:(HKRadialMenuView *)radialMenuView
-                                           atIndex:(NSUInteger)index;
+@interface HKRadialMenuItemView : UIView
 
-@end
+- (id)initWithStyle:(HKRadialMenuItemStyle)style;
+- (void)recenterLayout;
 
-@protocol HKRadialMenuViewDelegate <NSObject>
-
-- (BOOL)rotateItemInRadialMenuView:(HKRadialMenuView *)radialMenuView atIndex:(NSUInteger)index;
-- (CGFloat)distanceForItemInRadialMenuView:(HKRadialMenuView *)radialMenuView atIndex:(NSUInteger)index;
-- (void)radialMenuView:(HKRadialMenuView *)radialMenuView didSelectItemAtIndex:(NSUInteger)index;
-
-@end
-
-@interface HKRadialMenuView : UIView
-
-- (void)reloadData;
-- (void)revealItemsAnimated:(BOOL)animated;
-- (void)hideItemsAnimated:(BOOL)animated;
-
-@property (nonatomic, weak) id<HKRadialMenuViewDelegate> delegate;
-@property (nonatomic, weak) id<HKRadialMenuViewDataSource> dataSource;
-@property (nonatomic) CFTimeInterval animationDuration;
-@property (nonatomic) CFTimeInterval delayBetweenAnimations;
-@property (nonatomic) BOOL itemsVisible;
-@property (nonatomic) BOOL needsRelayout;
-@property (nonatomic) CGPoint angleRange;
+@property (nonatomic) HKRadialMenuItemStyle style;
+@property (nonatomic, readonly) UILabel *textLabel;
+@property (nonatomic, readonly) UILabel *subtitleLabel;
 
 @end

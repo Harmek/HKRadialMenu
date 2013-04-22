@@ -60,9 +60,16 @@
     [view reloadData];
 }
 
+- (HKRadialMenuView *)radialMenuView
+{
+    HKRadialMenuView *view = (HKRadialMenuView *)self.view;
+
+    return view;
+}
+
 #pragma mark HKRadialMenuViewDataSource methods
 
-- (UIView *)centerViewForRadialMenuView:(HKRadialMenuView *)radialMenuView
+- (UIView *)centerItemViewForRadialMenuView:(HKRadialMenuView *)radialMenuView
 {
     return nil;
 }
@@ -72,8 +79,7 @@
     return 1;
 }
 
-- (UIView *)viewForItemInRadialMenuView:(HKRadialMenuView *)radialMenuView
-                                atIndex:(NSUInteger)index
+- (HKRadialMenuItemView *)itemViewInRadialMenuView:(HKRadialMenuView *)radialMenuView atIndex:(NSUInteger)index
 {
     return nil;
 }
@@ -93,7 +99,7 @@
 }
 
 - (void)radialMenuView:(HKRadialMenuView *)radialMenuView
-didSelectItemAtIndex:(NSUInteger)index
+  didSelectItemAtIndex:(NSUInteger)index
 {
 
 }

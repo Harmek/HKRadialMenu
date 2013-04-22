@@ -29,7 +29,10 @@
 
 #import <UIKit/UIKit.h>
 #import "HKRadialMenuView.h"
+#import "HKRadialMenuItemView.h"
 
 @interface HKRadialMenuViewController : UIViewController <HKRadialMenuViewDataSource, HKRadialMenuViewDelegate>
+
+@property (nonatomic, readonly) HKRadialMenuView *radialMenuView;
 
 @end

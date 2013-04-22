@@ -28,8 +28,11 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 
 #import "HKViewController.h"
-
+#import "UIView+Resizing.h"
 @interface HKViewController ()
+
+- (void)startSliderChanged:(UISlider *)slider;
+- (void)endSliderChanged:(UISlider *)slider;
 
 @end
 
@@ -38,8 +41,38 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    HKRadialMenuView *radialView = (HKRadialMenuView *)self.view;
+
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(20, 20, 42, 21)];
+    label.text = @"Angle range (between 0 and PI)";
+    [label resizeToFit];
+
+    UISlider *startSlider = [[UISlider alloc] initWithFrame:CGRectMake(18, 49, 284, 23)];
+    startSlider.minimumValue = 0;
+    startSlider.maximumValue = M_PI * 2;
+    startSlider.value = 0;
+    [startSlider addTarget:self action:@selector(startSliderChanged:) forControlEvents:UIControlEventValueChanged];
+
+    UISlider *endSlider = [[UISlider alloc] initWithFrame:CGRectMake(18, 79, 284, 23)];
+    endSlider.minimumValue = 0;
+    endSlider.maximumValue = startSlider.maximumValue;
+    endSlider.value = endSlider.maximumValue;
+    [endSlider addTarget:self action:@selector(endSliderChanged:) forControlEvents:UIControlEventValueChanged];
+
+    [self.view addSubview:label];
+    [self.view addSubview:startSlider];
+    [self.view addSubview:endSlider];
+    HKRadialMenuView *radialView = self.radialMenuView;
     radialView.delayBetweenAnimations = .1;
+}
+
+- (void)startSliderChanged:(UISlider *)slider
+{
+    self.radialMenuView.angleRange = CGPointMake(slider.value, self.radialMenuView.angleRange.y);
+}
+
+- (void)endSliderChanged:(UISlider *)slider
+{
+    self.radialMenuView.angleRange = CGPointMake(self.radialMenuView.angleRange.x, slider.value);
 }
 
 - (NSUInteger)numberOfItemsInRadialMenuView:(HKRadialMenuView *)radialMenuView
@@ -47,46 +80,21 @@
     return 8;
 }
 
-- (UIView *)centerViewForRadialMenuView:(HKRadialMenuView *)radialMenuView
+- (UIView *)centerItemViewForRadialMenuView:(HKRadialMenuView *)radialMenuView
 {
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 40)];
-    label.text = @"Tap here";
-    [label sizeToFit];
+    HKRadialMenuItemView *itemView = [[HKRadialMenuItemView alloc] initWithStyle:HKRadialMenuItemStyleDefault];
 
-    label.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin |
-    UIViewAutoresizingFlexibleTopMargin |
-    UIViewAutoresizingFlexibleLeftMargin |
-    UIViewAutoresizingFlexibleRightMargin;
-    return label;
+    itemView.textLabel.text = @"Tap Here";
+
+    return itemView;
 }
 
-- (UIView *)viewForItemInRadialMenuView:(HKRadialMenuView *)radialMenuView atIndex:(NSUInteger)index
+- (HKRadialMenuItemView *)itemViewInRadialMenuView:(HKRadialMenuView *)radialMenuView atIndex:(NSUInteger)index
 {
-    NSString *text = [NSString stringWithFormat:@"Item #%u", index];
-    UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 40)];
-    textLabel.text = text;
-    textLabel.font = [UIFont boldSystemFontOfSize:18];
-    [textLabel sizeToFit];
+    HKRadialMenuItemView *itemView = [[HKRadialMenuItemView alloc] initWithStyle:HKRadialMenuItemStyleSubtitle];
+    itemView.textLabel.text = [NSString stringWithFormat:@"Item #%u", index];
+    itemView.subtitleLabel.text = @"Subtitle";
 
-    UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 40)];
-    subtitleLabel.text = @"Subtitle";
-    subtitleLabel.font = [UIFont systemFontOfSize:14];
-    subtitleLabel.textColor = [UIColor colorWithWhite:.5 alpha:1.];
-    [subtitleLabel sizeToFit];
-
-    CGFloat width = MAX(textLabel.frame.size.width, subtitleLabel.frame.size.width);
-    CGFloat height = textLabel.frame.size.height + subtitleLabel.frame.size.height + 1;
-    UIView *itemView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, height)];
-    [itemView addSubview:textLabel];
-    [itemView addSubview:subtitleLabel];
-    subtitleLabel.frame = CGRectMake(0, textLabel.frame.size.height, subtitleLabel.frame.size.width, subtitleLabel.frame.size.height);
-
-
-    itemView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin |
-    UIViewAutoresizingFlexibleTopMargin |
-    UIViewAutoresizingFlexibleLeftMargin |
-    UIViewAutoresizingFlexibleRightMargin;
-    [itemView sizeToFit];
     return itemView;
 }
 
