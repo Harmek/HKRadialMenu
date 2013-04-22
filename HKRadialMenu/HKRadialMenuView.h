@@ -1,5 +1,5 @@
 //
-//  HKViewController.h
+//  HKRadialMenuView.h
 //  HKRadialMenu
 //
 //  Copyright (c) 2013, Panos Baroudjian.
@@ -28,8 +28,34 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 
 #import <UIKit/UIKit.h>
-#import "HKRadialMenuViewController.h"
 
-@interface HKViewController : HKRadialMenuViewController
+@class HKRadialMenuView;
 
+@protocol HKRadialMenuViewDataSource <NSObject>
+
+- (UIView *)centerViewForRadialMenuView:(HKRadialMenuView *)radialMenuView;
+- (NSUInteger)numberOfItemsInRadialMenuView:(HKRadialMenuView *)radialMenuView;
+- (UIView *)viewForItemInRadialMenuView:(HKRadialMenuView *)radialMenuView atIndex:(NSUInteger)index;
+
+@end
+
+@protocol HKRadialMenuViewDelegate <NSObject>
+
+- (BOOL)rotateItemInRadialMenuView:(HKRadialMenuView *)radialMenuView atIndex:(NSUInteger)index;
+- (CGFloat)distanceForItemInRadialMenuView:(HKRadialMenuView *)radialMenuView atIndex:(NSUInteger)index;
+- (void)radialMenuView:(HKRadialMenuView *)radialMenuView didSelectItemAtIndex:(NSUInteger)index;
+
+@end
+
+@interface HKRadialMenuView : UIView
+
+- (void)reloadData;
+- (void)revealItemsAnimated:(BOOL)animated;
+- (void)hideItemsAnimated:(BOOL)animated;
+
+@property (nonatomic, weak) id<HKRadialMenuViewDelegate> delegate;
+@property (nonatomic, weak) id<HKRadialMenuViewDataSource> dataSource;
+@property (nonatomic) CFTimeInterval animationDuration;
+@property (nonatomic) CFTimeInterval delayBetweenAnimations;
+@property (nonatomic) BOOL itemsVisible;
 @end

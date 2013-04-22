@@ -17,7 +17,8 @@
 		50583E1D17235C1D0054BEBB /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50583E1C17235C1D0054BEBB /* Default@2x.png */; };
 		50583E1F17235C1D0054BEBB /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 50583E1E17235C1D0054BEBB /* Default-568h@2x.png */; };
 		50583E2217235C1D0054BEBB /* HKViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50583E2117235C1D0054BEBB /* HKViewController.m */; };
-		50583E2517235C1D0054BEBB /* HKViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50583E2317235C1D0054BEBB /* HKViewController.xib */; };
+		50583E2D172360D60054BEBB /* HKRadialMenuView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50583E2C172360D60054BEBB /* HKRadialMenuView.m */; };
+		50583E33172388B30054BEBB /* HKRadialMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50583E32172388B30054BEBB /* HKRadialMenuViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,7 +37,11 @@
 		50583E1E17235C1D0054BEBB /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		50583E2017235C1D0054BEBB /* HKViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HKViewController.h; sourceTree = "<group>"; };
 		50583E2117235C1D0054BEBB /* HKViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HKViewController.m; sourceTree = "<group>"; };
-		50583E2417235C1D0054BEBB /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/HKViewController.xib; sourceTree = "<group>"; };
+		50583E2B172360D60054BEBB /* HKRadialMenuView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HKRadialMenuView.h; sourceTree = "<group>"; };
+		50583E2C172360D60054BEBB /* HKRadialMenuView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HKRadialMenuView.m; sourceTree = "<group>"; };
+		50583E31172388B30054BEBB /* HKRadialMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HKRadialMenuViewController.h; sourceTree = "<group>"; };
+		50583E32172388B30054BEBB /* HKRadialMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HKRadialMenuViewController.m; sourceTree = "<group>"; };
+		50583E461723A3960054BEBB /* libHKViewManipulator.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libHKViewManipulator.a; path = "../HKViewManipulator/HKViewManipulator/build/Release-iphoneos/libHKViewManipulator.a"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +78,7 @@
 		50583E0717235C1D0054BEBB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				50583E461723A3960054BEBB /* libHKViewManipulator.a */,
 				50583E0817235C1D0054BEBB /* UIKit.framework */,
 				50583E0A17235C1D0054BEBB /* Foundation.framework */,
 				50583E0C17235C1D0054BEBB /* CoreGraphics.framework */,
@@ -87,8 +93,11 @@
 				50583E1817235C1D0054BEBB /* HKAppDelegate.m */,
 				50583E2017235C1D0054BEBB /* HKViewController.h */,
 				50583E2117235C1D0054BEBB /* HKViewController.m */,
-				50583E2317235C1D0054BEBB /* HKViewController.xib */,
 				50583E0F17235C1D0054BEBB /* Supporting Files */,
+				50583E2B172360D60054BEBB /* HKRadialMenuView.h */,
+				50583E2C172360D60054BEBB /* HKRadialMenuView.m */,
+				50583E31172388B30054BEBB /* HKRadialMenuViewController.h */,
+				50583E32172388B30054BEBB /* HKRadialMenuViewController.m */,
 			);
 			path = HKRadialMenu;
 			sourceTree = "<group>";
@@ -163,7 +172,6 @@
 				50583E1B17235C1D0054BEBB /* Default.png in Resources */,
 				50583E1D17235C1D0054BEBB /* Default@2x.png in Resources */,
 				50583E1F17235C1D0054BEBB /* Default-568h@2x.png in Resources */,
-				50583E2517235C1D0054BEBB /* HKViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -177,6 +185,8 @@
 				50583E1517235C1D0054BEBB /* main.m in Sources */,
 				50583E1917235C1D0054BEBB /* HKAppDelegate.m in Sources */,
 				50583E2217235C1D0054BEBB /* HKViewController.m in Sources */,
+				50583E2D172360D60054BEBB /* HKRadialMenuView.m in Sources */,
+				50583E33172388B30054BEBB /* HKRadialMenuViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -189,14 +199,6 @@
 				50583E1217235C1D0054BEBB /* en */,
 			);
 			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		50583E2317235C1D0054BEBB /* HKViewController.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				50583E2417235C1D0054BEBB /* en */,
-			);
-			name = HKViewController.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -263,6 +265,7 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "HKRadialMenu/HKRadialMenu-Prefix.pch";
+				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "HKRadialMenu/HKRadialMenu-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -274,6 +277,7 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "HKRadialMenu/HKRadialMenu-Prefix.pch";
+				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "HKRadialMenu/HKRadialMenu-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -299,6 +303,7 @@
 				50583E2A17235C1D0054BEBB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

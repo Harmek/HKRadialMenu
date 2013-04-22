@@ -1,5 +1,5 @@
 //
-//  HKViewController.h
+//  HKRadialMenuViewController.h
 //  HKRadialMenu
 //
 //  Copyright (c) 2013, Panos Baroudjian.
@@ -28,8 +28,8 @@
 //  POSSIBILITY OF SUCH DAMAGE.
 
 #import <UIKit/UIKit.h>
-#import "HKRadialMenuViewController.h"
+#import "HKRadialMenuView.h"
 
-@interface HKViewController : HKRadialMenuViewController
+@interface HKRadialMenuViewController : UIViewController <HKRadialMenuViewDataSource, HKRadialMenuViewDelegate>
 
 @end
