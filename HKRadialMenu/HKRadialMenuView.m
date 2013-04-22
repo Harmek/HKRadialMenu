@@ -39,6 +39,8 @@ static const float k2Pi = TWO_PI;
 @property (nonatomic) NSArray *items;
 @property (nonatomic) UIView *centerView;
 
+- (void)defaultInit;
+- (void)onOrientationChanged:(NSNotification *)notification;
 - (void)createCenterView;
 - (void)createItems;
 - (void)centerViewTapped:(UITapGestureRecognizer *)tapRecognizer;
@@ -46,6 +48,43 @@ static const float k2Pi = TWO_PI;
 @end
 
 @implementation HKRadialMenuView
+
+- (id)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self)
+    {
+        [self defaultInit];
+    }
+
+    return self;
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super initWithCoder:aDecoder];
+    if (self)
+    {
+        [self defaultInit];
+    }
+
+    return self;
+}
+
+- (void)defaultInit
+{
+    [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onOrientationChanged:)
+                                                 name:UIDeviceOrientationDidChangeNotification
+                                               object:[UIDevice currentDevice]];
+}
+
+- (void)onOrientationChanged:(NSNotification *)notification
+{
+    self.needsRelayout = self.itemsVisible;
+    [self hideItemsAnimated:NO];
+}
 
 - (void)createCenterView
 {
@@ -146,7 +185,7 @@ static const float k2Pi = TWO_PI;
 
 - (void)revealItemsAnimated:(BOOL)animated
 {
-    NSUInteger nbItems = [[self items] count];
+    NSUInteger nbItems = self.items.count;
     if (!nbItems)
         return;
     
@@ -239,6 +278,12 @@ static const float k2Pi = TWO_PI;
     }
 
     [super layoutSubviews];
+    
+    if (self.needsRelayout)
+    {
+        [self revealItemsAnimated:NO];
+        self.needsRelayout = NO;
+    }
 }
 
 @end

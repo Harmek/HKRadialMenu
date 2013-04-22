@@ -50,7 +50,6 @@
     radialMenuView.delegate = self;
     radialMenuView.animationDuration = 1;
     radialMenuView.backgroundColor = [UIColor whiteColor];
-    
     self.view = radialMenuView;
 }
 

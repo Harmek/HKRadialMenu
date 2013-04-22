@@ -53,17 +53,41 @@
     label.text = @"Tap here";
     [label sizeToFit];
 
+    label.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin |
+    UIViewAutoresizingFlexibleTopMargin |
+    UIViewAutoresizingFlexibleLeftMargin |
+    UIViewAutoresizingFlexibleRightMargin;
     return label;
 }
 
 - (UIView *)viewForItemInRadialMenuView:(HKRadialMenuView *)radialMenuView atIndex:(NSUInteger)index
 {
     NSString *text = [NSString stringWithFormat:@"Item #%u", index];
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 40)];
-    label.text = text;
-    [label sizeToFit];
+    UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 40)];
+    textLabel.text = text;
+    textLabel.font = [UIFont boldSystemFontOfSize:18];
+    [textLabel sizeToFit];
 
-    return label;
+    UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 40)];
+    subtitleLabel.text = @"Subtitle";
+    subtitleLabel.font = [UIFont systemFontOfSize:14];
+    subtitleLabel.textColor = [UIColor colorWithWhite:.5 alpha:1.];
+    [subtitleLabel sizeToFit];
+
+    CGFloat width = MAX(textLabel.frame.size.width, subtitleLabel.frame.size.width);
+    CGFloat height = textLabel.frame.size.height + subtitleLabel.frame.size.height + 1;
+    UIView *itemView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, height)];
+    [itemView addSubview:textLabel];
+    [itemView addSubview:subtitleLabel];
+    subtitleLabel.frame = CGRectMake(0, textLabel.frame.size.height, subtitleLabel.frame.size.width, subtitleLabel.frame.size.height);
+
+
+    itemView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin |
+    UIViewAutoresizingFlexibleTopMargin |
+    UIViewAutoresizingFlexibleLeftMargin |
+    UIViewAutoresizingFlexibleRightMargin;
+    [itemView sizeToFit];
+    return itemView;
 }
 
 - (CGFloat)distanceForItemInRadialMenuView:(HKRadialMenuView *)radialMenuView atIndex:(NSUInteger)index

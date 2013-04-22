@@ -58,4 +58,5 @@
 @property (nonatomic) CFTimeInterval animationDuration;
 @property (nonatomic) CFTimeInterval delayBetweenAnimations;
 @property (nonatomic) BOOL itemsVisible;
+@property (nonatomic) BOOL needsRelayout;
 @end
