@@ -36,6 +36,8 @@ static const float k2Pi = TWO_PI;
 
 @interface HKRadialMenuView ()
 
+@property (nonatomic) BOOL itemsVisible;
+@property (nonatomic) BOOL needsRelayout;
 @property (nonatomic) BOOL needsReloadData;
 @property (nonatomic) NSArray *items;
 @property (nonatomic) UIView *centerView;

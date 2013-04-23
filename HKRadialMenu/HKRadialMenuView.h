@@ -59,10 +59,10 @@
 
 @property (nonatomic, weak) id<HKRadialMenuViewDelegate> delegate;
 @property (nonatomic, weak) id<HKRadialMenuViewDataSource> dataSource;
-@property (nonatomic) CFTimeInterval animationDuration;
-@property (nonatomic) CFTimeInterval delayBetweenAnimations;
-@property (nonatomic) BOOL itemsVisible;
-@property (nonatomic) BOOL needsRelayout;
-@property (nonatomic) CGPoint angleRange;
+@property (nonatomic, readonly) BOOL itemsVisible;
+
+@property (nonatomic) CFTimeInterval animationDuration                  UI_APPEARANCE_SELECTOR;
+@property (nonatomic) CFTimeInterval delayBetweenAnimations             UI_APPEARANCE_SELECTOR;
+@property (nonatomic) CGPoint angleRange                                UI_APPEARANCE_SELECTOR;
 
 @end
