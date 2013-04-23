@@ -8,7 +8,7 @@ HKRadialMenu is an animated menu with an interactive central view that expands o
 How to use it
 -------------
 
-1. Use [CocoaPods](http://www.cocoapods.org) by adding *pod 'HKRadilaMenu'* in your Podfile.
+1. Use [CocoaPods](http://www.cocoapods.org) by adding *pod 'HKRadialMenu'* in your Podfile.
 2. Manually:
   * Clone this repository
   * Copy HKRadialMenuView, HKRadialMenuViewController, HKRadialMenuItemView and UIView+Resizing files (.h and .m) into your project.
@@ -21,15 +21,15 @@ Just like a UITableView, you need to provide a data source and a delegate to HKR
 
 Data source:
 
-* -(NSUInteger)numberOfItemsInRadialMenuView:(HKRadialMenuView *)radialMenuView: returns the number of items (excluding the central one);
-* -(HKRadialMenuItemView *)centerItemViewForRadialMenuView:(HKRadialMenuView *)radialMenuView: returns the HKRadialMenuItemView (or subclass) that will be used as the central interactive view;
-* - (HKRadialMenuItemView *)itemViewInRadialMenuView:(HKRadialMenuView *)radialMenuView atIndex:(NSUInteger)index: returns the peripherical view that will be shown at the specified index.
+* _- (NSUInteger)numberOfItemsInRadialMenuView:(HKRadialMenuView *)radialMenuView_: returns the number of items (excluding the central one);
+* _- (HKRadialMenuItemView *)centerItemViewForRadialMenuView:(HKRadialMenuView *)radialMenuView_: returns the HKRadialMenuItemView (or subclass) that will be used as the central interactive view;
+* _- (HKRadialMenuItemView *)itemViewInRadialMenuView:(HKRadialMenuView *)radialMenuView atIndex:(NSUInteger)index_: returns the peripherical view that will be shown at the specified index.
 
 Delegate:
 
-* - (BOOL)rotateItemInRadialMenuView:(HKRadialMenuView *)radialMenuView atIndex:(NSUInteger)index: if YES, the view will be viewed with its original rotation (very useful when using labels);
-* - (CGFloat)distanceForItemInRadialMenuView:(HKRadialMenuView *)radialMenuView atIndex:(NSUInteger)index: returns the radius at which the item will be placed;
-* - (void)radialMenuView:(HKRadialMenuView *)radialMenuView didSelectItemAtIndex:(NSUInteger)index: called when the user touches an item (except the central one).
+* _- (BOOL)rotateItemInRadialMenuView:(HKRadialMenuView *)radialMenuView atIndex:(NSUInteger)index_: if YES, the view will be viewed with its original rotation (very useful when using labels);
+* _- (CGFloat)distanceForItemInRadialMenuView:(HKRadialMenuView *)radialMenuView atIndex:(NSUInteger)index_: returns the radius at which the item will be placed;
+* _- (void)radialMenuView:(HKRadialMenuView *)radialMenuView didSelectItemAtIndex:(NSUInteger)index_: called when the user touches an item (except the central one).
 
 Other customizations are available on HKRadialMenuView (also accessible through [HKRadialMenuView appearance]):
 
