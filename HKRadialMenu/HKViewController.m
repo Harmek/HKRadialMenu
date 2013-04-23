@@ -29,6 +29,8 @@
 
 #import "HKViewController.h"
 #import "UIView+Resizing.h"
+#import "HKAnimatedRadialMenuItemView.h"
+
 @interface HKViewController ()
 
 - (void)startSliderChanged:(UISlider *)slider;
@@ -43,7 +45,7 @@
     [super viewDidLoad];
 
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(20, 20, 42, 21)];
-    label.text = @"Angle range (between 0 and PI)";
+    label.text = @"Angle range (between 0 and 2PI)";
     [label resizeToFit];
 
     UISlider *startSlider = [[UISlider alloc] initWithFrame:CGRectMake(18, 49, 284, 23)];
@@ -69,7 +71,6 @@
 {
     CGPoint range = self.radialMenuView.angleRange;
     range.x = slider.value;
-    NSLog(@"%f, %f", range.x, range.y);
     self.radialMenuView.angleRange = range;
 }
 
@@ -77,7 +78,6 @@
 {
     CGPoint range = self.radialMenuView.angleRange;
     range.y = slider.value;
-    NSLog(@"%f, %f", range.x, range.y);
     self.radialMenuView.angleRange = range;
 }
 
@@ -88,7 +88,7 @@
 
 - (UIView *)centerItemViewForRadialMenuView:(HKRadialMenuView *)radialMenuView
 {
-    HKRadialMenuItemView *itemView = [[HKRadialMenuItemView alloc] initWithStyle:HKRadialMenuItemStyleDefault];
+    HKAnimatedRadialMenuItemView *itemView = [[HKAnimatedRadialMenuItemView alloc] initWithStyle:HKRadialMenuItemStyleDefault];
 
     itemView.textLabel.text = @"Tap Here";
 
@@ -99,7 +99,7 @@
 {
     HKRadialMenuItemView *itemView = [[HKRadialMenuItemView alloc] initWithStyle:HKRadialMenuItemStyleSubtitle];
     itemView.textLabel.text = [NSString stringWithFormat:@"Item #%u", index];
-    itemView.subtitleLabel.text = @"Subtitle";
+    itemView.detailTextLabel.text = @"subtitle";
 
     return itemView;
 }

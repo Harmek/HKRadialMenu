@@ -46,6 +46,9 @@
 - (CGFloat)distanceForItemInRadialMenuView:(HKRadialMenuView *)radialMenuView atIndex:(NSUInteger)index;
 - (void)radialMenuView:(HKRadialMenuView *)radialMenuView didSelectItemAtIndex:(NSUInteger)index;
 
+@optional
+- (CGFloat)angleForItemViewInRadialMenuView:(HKRadialMenuView *)radialMenuView
+                                    atIndex:(NSUInteger)index;
 @end
 
 @interface HKRadialMenuView : UIView

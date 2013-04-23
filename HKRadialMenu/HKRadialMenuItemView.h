@@ -31,6 +31,7 @@
 
 typedef NS_ENUM(NSInteger, HKRadialMenuItemStyle)
 {
+    HKRadialMenuItemStyleNone = 0,
     HKRadialMenuItemStyleDefault,
     HKRadialMenuItemStyleSubtitle
 };
@@ -42,6 +43,7 @@ typedef NS_ENUM(NSInteger, HKRadialMenuItemStyle)
 
 @property (nonatomic) HKRadialMenuItemStyle style;
 @property (nonatomic, readonly) UILabel *textLabel;
-@property (nonatomic, readonly) UILabel *subtitleLabel;
+@property (nonatomic, readonly) UILabel *detailTextLabel;
+@property (nonatomic, readonly) UIImageView *imageView;
 
 @end

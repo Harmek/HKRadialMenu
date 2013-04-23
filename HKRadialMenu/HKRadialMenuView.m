@@ -29,7 +29,6 @@
 
 #import "HKRadialMenuView.h"
 #import "HKRadialMenuItemView.h"
-#import "NSNumber+Trigonometry.h"
 
 #define TWO_PI M_PI * 2.0f
 
@@ -46,6 +45,10 @@ static const float k2Pi = TWO_PI;
 - (void)createCenterView;
 - (void)createItems;
 - (void)centerViewTapped:(UITapGestureRecognizer *)tapRecognizer;
+
+- (UITapGestureRecognizer *)createGestureRecognizerForView:(UIView *)view
+                                              withSelector:(SEL)selector;
+- (void)recenterView:(HKRadialMenuItemView *)itemView;
 
 + (CGFloat)normalizeAngle:(CGFloat)angle;
 
@@ -67,6 +70,17 @@ static const float k2Pi = TWO_PI;
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
     self = [super initWithCoder:aDecoder];
+    if (self)
+    {
+        [self defaultInit];
+    }
+
+    return self;
+}
+
+- (id)init
+{
+    self = [super init];
     if (self)
     {
         [self defaultInit];
@@ -120,6 +134,28 @@ static const float k2Pi = TWO_PI;
         [self revealItemsAnimated:YES];
 }
 
+- (UITapGestureRecognizer *)createGestureRecognizerForView:(UIView *)view withSelector:(SEL)selector
+{
+    UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc]
+                                          initWithTarget:self
+                                          action:selector];
+    recognizer.numberOfTouchesRequired = 1;
+    recognizer.numberOfTapsRequired = 1;
+    [view addGestureRecognizer:recognizer];
+
+    return recognizer;
+}
+
+- (void)recenterView:(HKRadialMenuItemView *)itemView
+{
+    [itemView recenterLayout];
+    CGRect frame = itemView.frame;
+    CGPoint center = self.center;
+    frame.origin.x = center.x - frame.size.width * .5;
+    frame.origin.y = center.y - frame.size.height * .5;
+    itemView.frame = frame;
+}
+
 - (void)createCenterView
 {
     if (self.centerView)
@@ -131,21 +167,11 @@ static const float k2Pi = TWO_PI;
     HKRadialMenuItemView *centerView = [self.dataSource centerItemViewForRadialMenuView:self];
     if (centerView)
     {
-        [centerView recenterLayout];
-        CGRect frame = centerView.frame;
-        CGPoint center = self.center;
-        frame.origin.x = center.x - frame.size.width * .5;
-        frame.origin.y = center.y - frame.size.height * .5;
-        centerView.frame = frame;
-
-        UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc]
-                                              initWithTarget:self
-                                              action:@selector(centerViewTapped:)];
-        recognizer.numberOfTouchesRequired = 1;
-        recognizer.numberOfTapsRequired = 1;
-        [centerView addGestureRecognizer:recognizer];
-        centerView.userInteractionEnabled = YES;
+        [self recenterView:centerView];
+        [self createGestureRecognizerForView:centerView
+                                withSelector:@selector(centerViewTapped:)];
         [self addSubview:centerView];
+        self.centerView = centerView;
     }
 }
 
@@ -180,22 +206,10 @@ static const float k2Pi = TWO_PI;
                                                                            atIndex:i];
         if (itemView)
         {
-            [itemView recenterLayout];
             itemView.alpha = .0;
-            CGRect frame = itemView.frame;
-            CGPoint center = self.center;
-            frame.origin.x = center.x - frame.size.width * .5;
-            frame.origin.y = center.y - frame.size.height * .5;
-            itemView.frame = frame;
-
-            UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc]
-                                                  initWithTarget:self
-                                                  action:@selector(itemViewTapped:)];
-            recognizer.numberOfTouchesRequired = 1;
-            recognizer.numberOfTapsRequired = 1;
-            
-            [itemView addGestureRecognizer:recognizer];
-            [itemView setUserInteractionEnabled:YES];
+            [self recenterView:itemView];
+            [self createGestureRecognizerForView:itemView
+                                    withSelector:@selector(itemViewTapped:)];
             [items addObject:itemView];
             [self addSubview:itemView];
         }
@@ -226,11 +240,14 @@ static const float k2Pi = TWO_PI;
     NSUInteger nbItems = self.items.count;
     if (!nbItems)
         return;
-    
+
+    BOOL dynamicAngles = self.delegate && [self.delegate respondsToSelector:@selector(angleForItemViewInRadialMenuView:atIndex:)];
     CGFloat deltaAngle = (self.angleRange.y - self.angleRange.x) / (CGFloat)nbItems;
     CGFloat angle = self.angleRange.x;
     for (NSUInteger i = 0; i < nbItems; ++i)
     {
+        if (dynamicAngles)
+            angle = [self.delegate angleForItemViewInRadialMenuView:self atIndex:i];
         CGFloat distance = [self.delegate distanceForItemInRadialMenuView:self
                                                                   atIndex:i];
         BOOL rotate = [self.delegate rotateItemInRadialMenuView:self

@@ -30,12 +30,21 @@
 #import "HKRadialMenuItemView.h"
 #import "UIView+Resizing.h"
 
+static const UIViewAutoresizing kDefaultAutoresizingMask = UIViewAutoresizingFlexibleBottomMargin |
+                                                            UIViewAutoresizingFlexibleTopMargin |
+                                                            UIViewAutoresizingFlexibleLeftMargin |
+                                                            UIViewAutoresizingFlexibleRightMargin;
+
 @interface HKRadialMenuItemView ()
 
 - (void)defaultInit;
+- (void)createImageView;
+- (void)createTextLabel;
+- (void)createDetailTextLabel;
 
 @property (nonatomic) UILabel *textLabel;
-@property (nonatomic) UILabel *subtitleLabel;
+@property (nonatomic) UILabel *detailTextLabel;
+@property (nonatomic) UIImageView *imageView;
 
 @end
 
@@ -47,7 +56,7 @@
     if (self)
     {
         self.style = HKRadialMenuItemStyleDefault;
-        [self defaultInit];
+//        [self defaultInit];
     }
 
     return self;
@@ -59,7 +68,7 @@
     if (self)
     {
         self.style = HKRadialMenuItemStyleDefault;
-        [self defaultInit];
+//        [self defaultInit];
     }
 
     return self;
@@ -71,7 +80,7 @@
     if (self)
     {
         self.style = HKRadialMenuItemStyleDefault;
-        [self defaultInit];
+//        [self defaultInit];
     }
 
     return self;
@@ -79,65 +88,86 @@
 
 - (id)initWithStyle:(HKRadialMenuItemStyle)style
 {
-    self = [super initWithFrame:CGRectMake(0, 0, 10, 10)];
+    self = [super initWithFrame:CGRectZero];
     if (self)
     {
         self.style = style;
-        [self defaultInit];
+//        [self defaultInit];
     }
 
     return self;
 }
 
-- (void)defaultInit
+- (void)createImageView
 {
-    NSString *textLabelText = nil;
-    if (self.textLabel)
+    if (!self.imageView)
     {
-        textLabelText = self.textLabel.text;
-        [self.textLabel removeFromSuperview];
-        self.textLabel = nil;
+        self.imageView = [[UIImageView alloc] init];
+        [self addSubview:self.imageView];
+    }
+
+    self.imageView.frame = CGRectMake(0, 0, 40, 40);
+    self.imageView.contentMode = UIViewContentModeScaleAspectFit;
+}
+
+- (void)createTextLabel
+{
+    if (!self.textLabel)
+    {
+        self.textLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        self.textLabel.textAlignment = NSTextAlignmentCenter;
+        self.textLabel.backgroundColor = [UIColor clearColor];
+        [self addSubview:self.textLabel];
     }
 
     CGFloat fontSize = self.style == HKRadialMenuItemStyleSubtitle ? 18 : 20;
     UIFont *font = [UIFont boldSystemFontOfSize:fontSize];
-    CGSize labelSize = !textLabelText ? [@"Title" sizeWithFont:font] : [textLabelText sizeWithFont:font];
-    self.textLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, labelSize.width, labelSize.height)];
     self.textLabel.font = font;
-    self.textLabel.textAlignment = NSTextAlignmentCenter;
-    self.textLabel.backgroundColor = [UIColor clearColor];
-    [self addSubview:self.textLabel];
+}
+
+- (void)createDetailTextLabel
+{
+    if (!self.detailTextLabel)
+    {
+        self.detailTextLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        UIFont *font = [UIFont systemFontOfSize:14];
+        self.detailTextLabel.font = font;
+        self.detailTextLabel.textColor = [UIColor colorWithWhite:.5 alpha:1.];
+        self.detailTextLabel.textAlignment = NSTextAlignmentCenter;
+        self.detailTextLabel.backgroundColor = [UIColor clearColor];
+        [self addSubview:self.detailTextLabel];
+    }
+}
+
+- (void)defaultInit
+{
+    [self createImageView];
+    [self createTextLabel];
+
+    CGFloat offsetY = self.imageView.frame.size.height;
+    self.textLabel.frame = (CGRect)
+    {
+        .origin = { .0, offsetY },
+        .size = self.textLabel.frame.size
+    };
 
     if (self.style == HKRadialMenuItemStyleSubtitle)
     {
-        NSString *subtitleLabelText = nil;
-        if (self.subtitleLabel)
+        [self createDetailTextLabel];
+        offsetY += self.textLabel.frame.size.height;
+        self.detailTextLabel.frame = (CGRect)
         {
-            subtitleLabelText = self.subtitleLabel.text;
-            [self.subtitleLabel removeFromSuperview];
-            self.subtitleLabel = nil;
-        }
-
-        font = [UIFont systemFontOfSize:14];
-        labelSize = !subtitleLabelText ? [@"Subtitle" sizeWithFont:font] : [subtitleLabelText sizeWithFont:font];
-        self.subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, labelSize.width, labelSize.height)];
-        self.subtitleLabel.font = font;
-        self.subtitleLabel.textColor = [UIColor colorWithWhite:.5 alpha:1.];
-        self.subtitleLabel.textAlignment = NSTextAlignmentCenter;
-        self.subtitleLabel.backgroundColor = [UIColor clearColor];
-        self.subtitleLabel.frame = CGRectMake(0,
-                                              self.textLabel.frame.size.height,
-                                              self.subtitleLabel.frame.size.width,
-                                              self.subtitleLabel.frame.size.height);
-        [self addSubview:self.subtitleLabel];
+            .origin = {.0, offsetY},
+            .size = self.detailTextLabel.frame.size
+        };
     }
-
-    self.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin |
-                            UIViewAutoresizingFlexibleTopMargin |
-                            UIViewAutoresizingFlexibleLeftMargin |
-                            UIViewAutoresizingFlexibleRightMargin;
-
-    [self sizeToFit];
+    else if (self.detailTextLabel)
+    {
+        [self.detailTextLabel removeFromSuperview];
+        self.detailTextLabel = nil;
+    }
+    
+    self.autoresizingMask = kDefaultAutoresizingMask;
 }
 
 - (void)setStyle:(HKRadialMenuItemStyle)style
@@ -151,28 +181,45 @@
 
 - (void)recenterLayout
 {
+    CGFloat offsetY = self.imageView.frame.size.height;
+
     [self.textLabel resizeToFit];
+    self.textLabel.frame = (CGRect)
+    {
+        .origin = {.0, offsetY},
+        .size = self.textLabel.frame.size
+    };
+    offsetY += self.textLabel.frame.size.height;
+
     if (self.style == HKRadialMenuItemStyleSubtitle)
     {
-        [self.subtitleLabel resizeToFit];
-        CGFloat maxWidth = MAX(self.textLabel.frame.size.width, self.subtitleLabel.frame.size.width);
-        self.textLabel.frame = CGRectMake(self.textLabel.frame.origin.x,
-                                          self.textLabel.frame.origin.y,
-                                          maxWidth,
-                                          self.textLabel.frame.size.height);
-        self.subtitleLabel.frame = CGRectMake(self.subtitleLabel.frame.origin.x,
-                                              self.subtitleLabel.frame.origin.y,
+        [self.detailTextLabel resizeToFit];
+        CGFloat maxWidth = MAX(self.textLabel.frame.size.width, self.detailTextLabel.frame.size.width);
+        self.textLabel.frame = (CGRect)
+        {
+            .origin = self.textLabel.frame.origin,
+            .size = { maxWidth, self.textLabel.frame.size.height }
+        };
+        self.detailTextLabel.frame = CGRectMake(self.detailTextLabel.frame.origin.x,
+                                              offsetY,
                                               maxWidth,
-                                              self.subtitleLabel.frame.size.height);
+                                              self.detailTextLabel.frame.size.height);
     }
 
+    // Resizing the view to contain all subviews
     CGRect boundingFrame = CGRectZero;
     for (UIView *subView in self.subviews)
     {
         boundingFrame = CGRectUnion(boundingFrame, subView.frame);
     }
-
     self.frame = boundingFrame;
+
+    // Recentering the image view
+    self.imageView.frame = (CGRect)
+    {
+        .origin = { boundingFrame.size.width * .5 - self.imageView.frame.size.width * .5, 0 },
+        .size = self.imageView.frame.size
+    };
 }
 
 @end
