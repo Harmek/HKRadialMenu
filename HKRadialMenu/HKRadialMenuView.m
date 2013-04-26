@@ -179,6 +179,11 @@ static const float k2Pi = TWO_PI;
 
 - (void)centerViewTapped:(UITapGestureRecognizer *)tapRecognizer
 {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(radialMenuViewDidSelectCenterView:)])
+    {
+        [self.delegate radialMenuViewDidSelectCenterView:self];
+    }
+
     if (self.itemsVisible)
         [self hideItemsAnimated:YES];
     else

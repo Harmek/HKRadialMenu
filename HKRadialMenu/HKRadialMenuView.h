@@ -47,6 +47,9 @@
 - (void)radialMenuView:(HKRadialMenuView *)radialMenuView didSelectItemAtIndex:(NSUInteger)index;
 
 @optional
+- (void)radialMenuViewDidSelectCenterView:(HKRadialMenuView *)radialMenuView;
+
+@optional
 - (CGFloat)angleForItemViewInRadialMenuView:(HKRadialMenuView *)radialMenuView
                                     atIndex:(NSUInteger)index;
 @end
