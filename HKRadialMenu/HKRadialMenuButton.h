@@ -31,14 +31,16 @@ static const NSInteger HKRadialMenuButtonCenterIndex = -1;
       andOtherViews:(NSArray *)views
           andAngles:(NSArray *)angles;
 
-@property (nonatomic, readonly) UIView *backgroundView;
-@property (nonatomic, readonly) UIView *contentView;
+@property (nonatomic, readonly) UIView      *backgroundView;
+@property (nonatomic, readonly) UIView      *contentView;
+@property (nonatomic, readonly) BOOL        isExpanded;
+@property (nonatomic, readonly) NSInteger   selectedIndex;
 
-@property (nonatomic) BOOL autoRotate;
-@property (nonatomic) CFTimeInterval animationDuration                  UI_APPEARANCE_SELECTOR;
-@property (nonatomic) CFTimeInterval delayBetweenAnimations             UI_APPEARANCE_SELECTOR;
-@property (nonatomic) BOOL isExpanded;
-@property (nonatomic) NSInteger selectedIndex;
-@property (nonatomic) id<HKRadialMenuButtonDelegate> delegate;
+@property (nonatomic) BOOL              autoRotate              UI_APPEARANCE_SELECTOR;
+@property (nonatomic) CFTimeInterval    animationDuration       UI_APPEARANCE_SELECTOR;
+@property (nonatomic) CFTimeInterval    delayBetweenAnimations  UI_APPEARANCE_SELECTOR;
+@property (nonatomic) CGFloat           magnetismRatio          UI_APPEARANCE_SELECTOR;
+
+@property (nonatomic) id<HKRadialMenuButtonDelegate>    delegate;
 
 @end

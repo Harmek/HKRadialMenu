@@ -30,31 +30,28 @@
 {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
-    [[UILabel appearance] setTextColor:[UIColor blackColor]];
     UILabel *centerView = [[UILabel alloc] initWithFrame:CGRectZero];
-    centerView.text = @"Center";
-    [centerView resizeToFit];
+    centerView.text = @"Hold...";
     UILabel *view1 = [[UILabel alloc] initWithFrame:CGRectZero];
-    view1.text = @"View 1";
-    [view1 resizeToFit];
+    view1.text = @"Button 1";
     UILabel *view2 = [[UILabel alloc] initWithFrame:CGRectZero];
-    view2.text = @"View 2";
-    [view2 resizeToFit];
+    view2.text = @"Button 2";
     UILabel *view3 = [[UILabel alloc] initWithFrame:CGRectZero];
-    view3.text = @"View 3";
+    view3.text = @"Button 3";
+    centerView.font = [UIFont boldSystemFontOfSize:20];
+    view1.font = view2.font = view3.font = [UIFont boldSystemFontOfSize:18];
+    [centerView resizeToFit];
+    [view1 resizeToFit];
+    [view2 resizeToFit];
     [view3 resizeToFit];
-//    UIView *view1 = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
-//    [view1 setBackgroundColor:[UIColor greenColor]];
-//    UIView *view2 = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
-//    [view2 setBackgroundColor:[UIColor greenColor]];
-//    UIView *view3 = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
-//    [view3 setBackgroundColor:[UIColor greenColor]];
+
     HKRadialMenuButton *button = [[HKRadialMenuButton alloc]
-                                  initWithFrame:CGRectMake(100, 100, 300, 300)
+                                  initWithFrame:CGRectMake(0, 0, 300, 300)
                                   andCenterView:centerView
                                   andOtherViews:@[view1, view2, view3]
-                                  andAngles:@[@0, [NSNumber numberWithFloat:3 * M_PI_2], @M_PI]];
-    [button setBackgroundColor:[UIColor redColor]];
+                                  andAngles:@[[NSNumber numberWithFloat:-M_PI_4],
+                                              [NSNumber numberWithFloat:3 * M_PI_2],
+                                              [NSNumber numberWithFloat:-3 * M_PI_4]]];
     button.center = self.view.center;
     [self.view addSubview:button];
 	// Do any additional setup after loading the view.

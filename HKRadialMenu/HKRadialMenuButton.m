@@ -9,28 +9,80 @@
 #import "HKRadialMenuButton.h"
 #import "HKRadialGestureRecognizer.h"
 
+static CGFloat CGSizeGetRadius(CGSize size)
+{
+    return MAX(size.width, size.height) * .5;
+}
+
 @interface HKRadialMenuButton ()
 
 @property (nonatomic) UIView *backgroundView;
 @property (nonatomic) UIView *contentView;
+@property (nonatomic) BOOL isExpanded;
+@property (nonatomic) NSInteger selectedIndex;
 
 @property (nonatomic) UIView *centerView;
 @property (nonatomic) NSArray *views;
 @property (nonatomic) NSArray *angles;
-
 @property (nonatomic) CGFloat radius;
 
 @property (nonatomic) HKRadialGestureRecognizer *gestureRecognizer;
 
 @property (nonatomic) NSInteger layoutPadlock;
 
+- (void)_defaultInit;
+
 - (void)gestureRecognizerUpdated:(HKRadialGestureRecognizer *)recognizer;
 - (void)revealViewsAnimated:(BOOL)animated;
 - (void)hideViewsAnimated:(BOOL)animated;
 
+- (void)animateView:(UIView *)view
+          withAlpha:(CGFloat)alpha
+       andTransform:(CGAffineTransform)transform;
+- (void)expandView:(UIView *)view
+          andAngle:(CGFloat)angle
+       andDistance:(CGFloat)distance
+          animated:(BOOL)animated;
+- (void)collapseView:(UIView *)view
+            animated:(BOOL)animated;
+- (void)animateMagnetismWithGestureRecognizer:(HKRadialGestureRecognizer *)recognizer;
+
 @end
 
 @implementation HKRadialMenuButton
+
+- (id)init
+{
+    self = [super init];
+    if (self)
+    {
+        [self _defaultInit];
+    }
+
+    return self;
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super initWithCoder:aDecoder];
+    if (self)
+    {
+        [self _defaultInit];
+    }
+
+    return self;
+}
+
+- (id)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self)
+    {
+        [self _defaultInit];
+    }
+
+    return self;
+}
 
 - (id)initWithFrame:(CGRect)frame
       andCenterView:(UIView *)view
@@ -41,18 +93,72 @@
     if (self)
     {
         self.centerView = view;
-        [self addSubview:self.centerView];
         self.views = views;
-        for (UIView *view in views) {
-            [self addSubview:view];
-        }
         self.angles = angles;
-        self.autoRotate = YES;
-        self.animationDuration = 1;
-        self.selectedIndex = NSNotFound;
     }
 
     return self;
+}
+
+- (void)_defaultInit
+{
+    self.autoRotate = YES;
+    self.animationDuration = 1;
+    self.selectedIndex = NSNotFound;
+    self.magnetismRatio = .85;
+    self.delayBetweenAnimations = 0;
+}
+
+- (UIView *)contentView
+{
+    if (!_contentView)
+    {
+        _contentView = [[UIView alloc] initWithFrame:self.frame];
+        [self addSubview:_contentView];
+    }
+
+    return _contentView;
+}
+
+- (UIView *)backgroundView
+{
+    if (!_backgroundView)
+    {
+        _backgroundView = [[UIView alloc] initWithFrame:self.frame];
+        [self addSubview:_backgroundView];
+    }
+
+    return _backgroundView;
+}
+
+- (void)setCenterView:(UIView *)centerView
+{
+    if (_centerView == centerView)
+        return;
+
+    if (_centerView)
+        [_centerView removeFromSuperview];
+    _centerView = centerView;
+    [self.contentView addSubview:centerView];
+}
+
+- (void)setViews:(NSArray *)views
+{
+    if (_views == views)
+        return;
+
+    if (_views)
+    {
+        for (UIView *view in _views)
+        {
+            [view removeFromSuperview];
+        }
+    }
+    _views = views;
+    for (UIView *view in views)
+    {
+        [self.contentView addSubview:view];
+    }
 }
 
 - (HKRadialGestureRecognizer *)gestureRecognizer
@@ -73,12 +179,13 @@
     if (self.layoutPadlock)
         return;
 
-    NSLog(@"layout", @"");
     CGRect frame = self.frame;
+    self.contentView.frame = self.bounds;
+    self.backgroundView.frame = self.bounds;
     CGFloat outerRadius = MIN(frame.size.width, frame.size.height) * .5;
     self.radius = outerRadius;
     frame = self.centerView.frame;
-    CGFloat innerRadius = MAX(frame.size.width, frame.size.height) * .5;
+    CGFloat innerRadius = CGSizeGetRadius(frame.size);
     self.gestureRecognizer.innerRadius = innerRadius;
     self.gestureRecognizer.outerRadius = outerRadius;
     self.gestureRecognizer.angles = self.angles;
@@ -101,6 +208,89 @@
             .size = frame.size
         };
     }
+}
+
+- (void)animateView:(UIView *)view
+          withAlpha:(CGFloat)alpha
+       andTransform:(CGAffineTransform)transform
+{
+    self.layoutPadlock += 1;
+    [UIView animateWithDuration:self.animationDuration
+                          delay:0
+                        options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionBeginFromCurrentState
+                     animations:^(){
+                         view.alpha = alpha;
+                         view.transform = transform;
+                     }
+                     completion:^(BOOL completed){
+                         --self.layoutPadlock;
+                     }];
+}
+
+- (void)expandView:(UIView *)view
+          andAngle:(CGFloat)angle
+       andDistance:(CGFloat)distance
+          animated:(BOOL)animated
+{
+    CGAffineTransform transform = CGAffineTransformIdentity;
+    if (self.autoRotate)
+        transform = CGAffineTransformRotate(transform, -angle);
+    transform.tx = distance;
+    transform = CGAffineTransformConcat(transform, CGAffineTransformMakeRotation(angle));
+    if (animated)
+    {
+        [self animateView:view withAlpha:1. andTransform:transform];
+    }
+    else
+    {
+        view.alpha = 1.;
+        view.transform = transform;
+    }
+}
+
+- (void)collapseView:(UIView *)view animated:(BOOL)animated
+{
+    if (animated)
+    {
+        [self animateView:view withAlpha:.0 andTransform:CGAffineTransformIdentity];
+    }
+    else
+    {
+        view.transform = CGAffineTransformIdentity;
+        view.alpha = .0;
+    }
+}
+
+- (void)animateMagnetismWithGestureRecognizer:(HKRadialGestureRecognizer *)recognizer
+{
+    NSInteger previousIndex = self.selectedIndex;
+    NSInteger newIndex = recognizer.closestAngleIndex;
+    if (previousIndex != NSNotFound && previousIndex != HKRadialMenuButtonCenterIndex)
+    {
+        UIView *view = self.views[previousIndex];
+        NSNumber *angleNumber = self.angles[previousIndex];
+        CGFloat angle = angleNumber.floatValue;
+        CGFloat distance = (self.radius - CGSizeGetRadius(view.frame.size));
+        [self expandView:view andAngle:angle andDistance:distance animated:YES];
+        if ([self.delegate respondsToSelector:@selector(radialMenuButton:unhighlightedView:atIndex:)])
+            [self.delegate radialMenuButton:self
+                          unhighlightedView:view
+                                    atIndex:previousIndex];
+    }
+
+    if (newIndex != NSNotFound && newIndex != HKRadialMenuButtonCenterIndex)
+    {
+        UIView *view = self.views[newIndex];
+        NSNumber *angleNumber = self.angles[newIndex];
+        CGFloat angle = angleNumber.floatValue;
+        CGFloat distance = (self.radius - CGSizeGetRadius(view.frame.size)) * self.magnetismRatio;
+        [self expandView:view andAngle:angle andDistance:distance animated:YES];
+        if ([self.delegate respondsToSelector:@selector(radialMenuButton:highlightedView:atIndex:)])
+            [self.delegate radialMenuButton:self
+                            highlightedView:view
+                                    atIndex:newIndex];
+    }
+
 }
 
 - (void)gestureRecognizerUpdated:(HKRadialGestureRecognizer *)recognizer
@@ -131,72 +321,10 @@
         }
         case UIGestureRecognizerStateChanged:
         {
-//            NSLog(@"%@", @"Changed");
-            NSInteger previousSelectedIndex = self.selectedIndex;
-            NSInteger newSelectedIndex = recognizer.closestAngleIndex;
-            if (previousSelectedIndex != newSelectedIndex)
+            if (self.selectedIndex != recognizer.closestAngleIndex)
             {
-                if (previousSelectedIndex != NSNotFound && previousSelectedIndex != HKRadialMenuButtonCenterIndex)
-                {
-                    UIView *view = self.views[previousSelectedIndex];
-                    NSNumber *angleNumber = self.angles[previousSelectedIndex];
-                    CGFloat angle = angleNumber.floatValue;
-                    CGRect viewFrame = view.frame;
-                    CGFloat viewRadius = MAX(viewFrame.size.width, viewFrame.size.height) * .5;
-                    CGFloat distance = (self.radius - viewRadius);
-                    CGAffineTransform transform = CGAffineTransformIdentity;
-                    if (self.autoRotate)
-                        transform = CGAffineTransformRotate(transform, -angle);
-                    transform.tx = distance;
-                    transform = CGAffineTransformConcat(transform, CGAffineTransformMakeRotation(angle));
-                    self.layoutPadlock += 1;
-                    [UIView animateWithDuration:self.animationDuration
-                                          delay:0
-                                        options:UIViewAnimationOptionCurveEaseOut |
-                                                UIViewAnimationOptionBeginFromCurrentState
-                                     animations:^(){
-                                         view.transform = transform;
-                                     }
-                                     completion:^(BOOL completed){
-                                         --self.layoutPadlock;
-                                     }];
-                    if ([self.delegate respondsToSelector:@selector(radialMenuButton:unhighlightedView:atIndex:)])
-                        [self.delegate radialMenuButton:self
-                                      unhighlightedView:view
-                                                atIndex:previousSelectedIndex];
-                }
-
-                if (newSelectedIndex != NSNotFound && newSelectedIndex != HKRadialMenuButtonCenterIndex)
-                {
-                    UIView *view = self.views[newSelectedIndex];
-                    NSNumber *angleNumber = self.angles[newSelectedIndex];
-                    CGFloat angle = angleNumber.floatValue;
-                    CGRect viewFrame = view.frame;
-                    CGFloat viewRadius = MAX(viewFrame.size.width, viewFrame.size.height) * .5;
-                    CGFloat distance = (self.radius - viewRadius) * .75;
-                    CGAffineTransform transform = CGAffineTransformIdentity;
-                    if (self.autoRotate)
-                        transform = CGAffineTransformRotate(transform, -angle);
-                    transform.tx = distance;
-                    transform = CGAffineTransformConcat(transform, CGAffineTransformMakeRotation(angle));
-                    self.layoutPadlock++;
-                    [UIView animateWithDuration:self.animationDuration
-                                          delay:0
-                                        options:UIViewAnimationOptionCurveEaseOut |
-                                                UIViewAnimationOptionBeginFromCurrentState
-                                     animations:^(){
-                                         view.transform = transform;
-                                     }
-                                     completion:^(BOOL completed){
-                                         --self.layoutPadlock;
-                                     }];
-                    if ([self.delegate respondsToSelector:@selector(radialMenuButton:highlightedView:atIndex:)])
-                        [self.delegate radialMenuButton:self
-                                        highlightedView:view
-                                                atIndex:newSelectedIndex];
-                }
-
-                self.selectedIndex = newSelectedIndex;
+                [self animateMagnetismWithGestureRecognizer:recognizer];
+                self.selectedIndex = recognizer.closestAngleIndex;
             }
             break;
         }
@@ -211,40 +339,16 @@
     if (!nbViews)
         return;
 
-    self.layoutPadlock += nbViews;
     for (NSUInteger i = 0; i < nbViews; ++i)
     {
         UIView *radialView = self.views[i];
-        CGRect viewFrame = radialView.frame;
-        CGFloat viewRadius = MAX(viewFrame.size.width, viewFrame.size.height) * .5;
+        CGFloat viewRadius = CGSizeGetRadius(radialView.frame.size);
         CGFloat distance = self.radius - viewRadius;
-        NSNumber *angleNumber = self.angles[i];
-        CGFloat angle = angleNumber.floatValue;
-        CGAffineTransform transform = CGAffineTransformIdentity;
-        if (self.autoRotate)
-            transform = CGAffineTransformRotate(transform, -angle);
-        transform.tx = distance;
-        transform = CGAffineTransformConcat(transform, CGAffineTransformMakeRotation(angle));
-
-        if (animated)
-        {
-            [UIView animateWithDuration:self.animationDuration
-                                  delay:i * self.delayBetweenAnimations
-                                options:UIViewAnimationOptionCurveEaseOut |
-             UIViewAnimationOptionBeginFromCurrentState
-                             animations:^(){
-                                 radialView.alpha = 1.;
-                                 radialView.transform = transform;
-                             }
-                             completion:^(BOOL completed){
-                                 --self.layoutPadlock;
-                             }];
-        }
-        else
-        {
-            radialView.alpha = 1.;
-            radialView.transform = transform;
-        }
+        NSNumber *angle = self.angles[i];
+        [self expandView:radialView
+                andAngle:angle.floatValue
+             andDistance:distance
+                animated:animated];
     }
 
     self.isExpanded = YES;
@@ -259,29 +363,10 @@
     if (!nbViews)
         return;
 
-    self.layoutPadlock += nbViews;
     for (NSUInteger i = nbViews; i != 0; --i)
     {
         UIView *view = [self.views objectAtIndex:i - 1];
-        if (animated)
-        {
-            [UIView animateWithDuration:self.animationDuration
-                                  delay:(nbViews - i) * self.delayBetweenAnimations
-                                options:UIViewAnimationOptionCurveEaseOut |
-             UIViewAnimationOptionBeginFromCurrentState
-                             animations:^(){
-                                 view.alpha = 0.;
-                                 view.transform = CGAffineTransformIdentity;
-                             }
-                             completion:^(BOOL completed){
-                                 --self.layoutPadlock;
-                             }];
-        }
-        else
-        {
-            view.alpha = 0.;
-            view.transform = CGAffineTransformIdentity;
-        }
+        [self collapseView:view animated:animated];
     }
 
     self.isExpanded = NO;

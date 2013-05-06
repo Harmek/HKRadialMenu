@@ -61,9 +61,7 @@ static CGFloat CGFloatNormalizeAngle(CGFloat angle)
 
 @interface HKRadialGestureRecognizer ()
 
-@property (nonatomic) NSInteger     closestAngleIndex;
-
-//@property (nonatomic) CGPoint center;
+@property (nonatomic) NSInteger closestAngleIndex;
 @property (nonatomic) CGFloat innerRadiusSq;
 @property (nonatomic) CGFloat outerRadiusSq;
 
@@ -74,7 +72,6 @@ static CGFloat CGFloatNormalizeAngle(CGFloat angle)
 - (void)reset
 {
     [super reset];
-//    self.center = CGPointZero;
     self.closestAngleIndex = NSNotFound;
 }
 
@@ -148,7 +145,6 @@ static CGFloat CGFloatNormalizeAngle(CGFloat angle)
     else if (distanceSq > self.innerRadiusSq)
     {
         CGFloat currentAngle = CGFloatNormalizeAngle(atan2(vector.y, vector.x));
-        NSLog(@"%f", currentAngle);
         CGFloat smallestDelta = FLT_MAX;
         NSInteger closestAngleIndex = NSNotFound;
         NSInteger i = 0;
@@ -163,7 +159,6 @@ static CGFloat CGFloatNormalizeAngle(CGFloat angle)
 
             ++i;
         }
-
         self.closestAngleIndex = closestAngleIndex;
     }
     else
@@ -195,25 +190,5 @@ static CGFloat CGFloatNormalizeAngle(CGFloat angle)
         self.state = UIGestureRecognizerStateEnded;
     }
 }
-
-//- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
-//{
-//    self.state = UIGestureRecognizerStateFailed;
-//}
-//
-//- (void)ignoreTouch:(UITouch *)touch forEvent:(UIEvent *)event
-//{
-//
-//}
-//
-//- (BOOL)canBePreventedByGestureRecognizer:(UIGestureRecognizer *)preventingGestureRecognizer
-//{
-//    return NO;
-//}
-//
-//- (BOOL)canPreventGestureRecognizer:(UIGestureRecognizer *)preventedGestureRecognizer
-//{
-//    return NO;
-//}
 
 @end

@@ -14,7 +14,6 @@
 @property (nonatomic) CGFloat               outerRadius;
 @property (nonatomic) NSArray               *angles;
 
-@property (nonatomic, readonly) CGPoint     center;
 @property (nonatomic, readonly) NSInteger   closestAngleIndex;
 
 @end
