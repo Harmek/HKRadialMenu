@@ -131,7 +131,6 @@ static CGFloat CGSizeGetRadius(CGSize size)
     self.animationDuration = 1;
     self.selectedIndex = NSNotFound;
     self.magnetismRatio = .85;
-    self.delayBetweenAnimations = 0;
 }
 
 - (UIView *)contentView

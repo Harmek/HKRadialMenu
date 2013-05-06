@@ -61,7 +61,6 @@ static const NSInteger HKRadialMenuButtonCenterIndex = -1;
 
 @property (nonatomic) BOOL              autoRotate              UI_APPEARANCE_SELECTOR;
 @property (nonatomic) CFTimeInterval    animationDuration       UI_APPEARANCE_SELECTOR;
-@property (nonatomic) CFTimeInterval    delayBetweenAnimations  UI_APPEARANCE_SELECTOR;
 @property (nonatomic) CGFloat           magnetismRatio          UI_APPEARANCE_SELECTOR;
 
 @property (nonatomic) id<HKRadialMenuButtonDelegate>    delegate;
