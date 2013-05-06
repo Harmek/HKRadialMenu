@@ -2,9 +2,30 @@
 //  HKRadialMenuButton.m
 //  HKRadialMenu
 //
-//  Created by Panos Baroudjian on 5/6/13.
-//  Copyright (c) 2013 Panos Baroudjian. All rights reserved.
+//  Copyright (c) 2013, Panos Baroudjian.
+//  All rights reserved.
 //
+//  Redistribution and use in source and binary forms, with or without
+//  modification, are permitted provided that the following conditions are met:
+//
+//  1. Redistributions of source code must retain the above copyright notice, this
+//  list of conditions and the following disclaimer.
+//
+//  2. Redistributions in binary form must reproduce the above copyright notice,
+//  this list of conditions and the following disclaimer in the documentation
+//  and/or other materials provided with the distribution.
+//
+//  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+//  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+//  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+//  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+//  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+//  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+//  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+//  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+//  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+//  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+//  POSSIBILITY OF SUCH DAMAGE.
 
 #import "HKRadialMenuButton.h"
 #import "HKRadialGestureRecognizer.h"
@@ -299,6 +320,13 @@ static CGFloat CGSizeGetRadius(CGSize size)
                           unhighlightedView:view
                                     atIndex:previousIndex];
     }
+    else if (previousIndex == HKRadialMenuButtonCenterIndex)
+    {
+        if ([self.delegate respondsToSelector:@selector(radialMenuButton:unhighlightedView:atIndex:)])
+            [self.delegate radialMenuButton:self
+                          unhighlightedView:self.centerView
+                                    atIndex:HKRadialMenuButtonCenterIndex];
+    }
 
     if (newIndex != NSNotFound && newIndex != HKRadialMenuButtonCenterIndex)
     {
@@ -312,7 +340,13 @@ static CGFloat CGSizeGetRadius(CGSize size)
                             highlightedView:view
                                     atIndex:newIndex];
     }
-
+    else if (newIndex == HKRadialMenuButtonCenterIndex)
+    {
+        if ([self.delegate respondsToSelector:@selector(radialMenuButton:highlightedView:atIndex:)])
+            [self.delegate radialMenuButton:self
+                            highlightedView:self.centerView
+                                    atIndex:HKRadialMenuButtonCenterIndex];
+    }
 }
 
 - (void)gestureRecognizerUpdated:(HKRadialGestureRecognizer *)recognizer
@@ -321,7 +355,21 @@ static CGFloat CGSizeGetRadius(CGSize size)
     {
         case UIGestureRecognizerStateBegan:
         {
+            if ([self.delegate respondsToSelector:@selector(radialMenuButton:highlightedView:atIndex:)])
+                [self.delegate radialMenuButton:self
+                                highlightedView:self.centerView
+                                        atIndex:HKRadialMenuButtonCenterIndex];
+            self.selectedIndex = HKRadialMenuButtonCenterIndex;
             [self revealViewsAnimated:YES];
+            break;
+        }
+        case UIGestureRecognizerStateChanged:
+        {
+            if (self.selectedIndex != recognizer.closestAngleIndex)
+            {
+                [self animateMagnetismWithGestureRecognizer:recognizer];
+                self.selectedIndex = recognizer.closestAngleIndex;
+            }
             break;
         }
         case UIGestureRecognizerStateEnded:
@@ -342,15 +390,6 @@ static CGFloat CGSizeGetRadius(CGSize size)
                                             atIndex:self.selectedIndex];
             }
             [self hideViewsAnimated:YES];
-            break;
-        }
-        case UIGestureRecognizerStateChanged:
-        {
-            if (self.selectedIndex != recognizer.closestAngleIndex)
-            {
-                [self animateMagnetismWithGestureRecognizer:recognizer];
-                self.selectedIndex = recognizer.closestAngleIndex;
-            }
             break;
         }
         default:

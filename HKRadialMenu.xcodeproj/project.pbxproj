@@ -111,10 +111,7 @@
 				50583E0F17235C1D0054BEBB /* Supporting Files */,
 				50C14B7517268D7800834012 /* Views */,
 				50C14B7617268D8900834012 /* Extensions */,
-				509A9F48173719B700F55ED7 /* HKRadialGestureRecognizer.h */,
-				509A9F49173719B700F55ED7 /* HKRadialGestureRecognizer.m */,
-				509A9F4B1737502600F55ED7 /* HKRadialMenuButton.h */,
-				509A9F4C1737502600F55ED7 /* HKRadialMenuButton.m */,
+				509A9F511737E52A00F55ED7 /* Gesture Recognizers */,
 			);
 			path = HKRadialMenu;
 			sourceTree = "<group>";
@@ -133,9 +130,20 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		509A9F511737E52A00F55ED7 /* Gesture Recognizers */ = {
+			isa = PBXGroup;
+			children = (
+				509A9F48173719B700F55ED7 /* HKRadialGestureRecognizer.h */,
+				509A9F49173719B700F55ED7 /* HKRadialGestureRecognizer.m */,
+			);
+			name = "Gesture Recognizers";
+			sourceTree = "<group>";
+		};
 		50C14B7517268D7800834012 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				509A9F4B1737502600F55ED7 /* HKRadialMenuButton.h */,
+				509A9F4C1737502600F55ED7 /* HKRadialMenuButton.m */,
 				50583E2B172360D60054BEBB /* HKRadialMenuView.h */,
 				50583E2C172360D60054BEBB /* HKRadialMenuView.m */,
 				50583E31172388B30054BEBB /* HKRadialMenuViewController.h */,
