@@ -29,12 +29,8 @@
 
 #import <UIKit/UIKit.h>
 
-@class HKViewController;
-
 @interface HKAppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
-
-@property (strong, nonatomic) HKViewController *viewController;
 
 @end

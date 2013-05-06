@@ -38,9 +38,14 @@
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
-    self.viewController = [[HKViewController alloc] init];
+    HKViewController *viewController = [[HKViewController alloc] init];
+    viewController.title = @"Radial Menu View";
+    HKViewController2 *viewController2 = [[HKViewController2 alloc] init];
+    viewController2.title = @"Radial Menu Button";
     //    self.window.rootViewController = self.viewController;
-    self.window.rootViewController = [[HKViewController2 alloc] init];
+    UITabBarController *tabBarCtrl = [[UITabBarController alloc] init];
+    tabBarCtrl.viewControllers = @[viewController, viewController2];
+    self.window.rootViewController = tabBarCtrl;
     [self.window makeKeyAndVisible];
     return YES;
 }
