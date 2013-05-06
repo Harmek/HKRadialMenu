@@ -37,8 +37,11 @@ static CGFloat CGSizeGetRadius(CGSize size)
 - (void)hideViewsAnimated:(BOOL)animated;
 
 - (void)animateView:(UIView *)view
-          withAlpha:(CGFloat)alpha
-       andTransform:(CGAffineTransform)transform;
+       withDuration:(CGFloat)duration
+           andAlpha:(CGFloat)alpha
+       andTransform:(CGAffineTransform)transform
+      andCompletion:(void (^)(BOOL finished))completion;
+
 - (void)expandView:(UIView *)view
           andAngle:(CGFloat)angle
        andDistance:(CGFloat)distance
@@ -46,6 +49,7 @@ static CGFloat CGSizeGetRadius(CGSize size)
 - (void)collapseView:(UIView *)view
             animated:(BOOL)animated;
 - (void)animateMagnetismWithGestureRecognizer:(HKRadialGestureRecognizer *)recognizer;
+- (void)animateSelectionOnView:(UIView *)view;
 
 @end
 
@@ -211,11 +215,13 @@ static CGFloat CGSizeGetRadius(CGSize size)
 }
 
 - (void)animateView:(UIView *)view
-          withAlpha:(CGFloat)alpha
+       withDuration:(CGFloat)duration
+           andAlpha:(CGFloat)alpha
        andTransform:(CGAffineTransform)transform
+      andCompletion:(void (^)(BOOL finished))completion
 {
     self.layoutPadlock += 1;
-    [UIView animateWithDuration:self.animationDuration
+    [UIView animateWithDuration:duration
                           delay:0
                         options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionBeginFromCurrentState
                      animations:^(){
@@ -224,6 +230,8 @@ static CGFloat CGSizeGetRadius(CGSize size)
                      }
                      completion:^(BOOL completed){
                          --self.layoutPadlock;
+                         if (completion)
+                             completion(completed);
                      }];
 }
 
@@ -239,7 +247,7 @@ static CGFloat CGSizeGetRadius(CGSize size)
     transform = CGAffineTransformConcat(transform, CGAffineTransformMakeRotation(angle));
     if (animated)
     {
-        [self animateView:view withAlpha:1. andTransform:transform];
+        [self animateView:view withDuration:self.animationDuration andAlpha:1. andTransform:transform andCompletion:nil];
     }
     else
     {
@@ -252,13 +260,27 @@ static CGFloat CGSizeGetRadius(CGSize size)
 {
     if (animated)
     {
-        [self animateView:view withAlpha:.0 andTransform:CGAffineTransformIdentity];
+        [self animateView:view withDuration:self.animationDuration andAlpha:.0 andTransform:CGAffineTransformIdentity andCompletion:nil];
     }
     else
     {
         view.transform = CGAffineTransformIdentity;
         view.alpha = .0;
     }
+}
+
+- (void)animateSelectionOnView:(UIView *)view
+{
+    CGAffineTransform transform = view.transform;
+    transform = CGAffineTransformConcat(CGAffineTransformMakeScale(2, 2), transform);
+    [self animateView:view
+         withDuration:self.animationDuration * .5
+             andAlpha:.0
+         andTransform:transform
+        andCompletion:^(BOOL complete){
+            view.transform = CGAffineTransformIdentity;
+            view.alpha = view == self.centerView ? 1. : .0;
+        }];
 }
 
 - (void)animateMagnetismWithGestureRecognizer:(HKRadialGestureRecognizer *)recognizer
@@ -309,11 +331,14 @@ static CGFloat CGSizeGetRadius(CGSize size)
                 self.selectedIndex = recognizer.closestAngleIndex;
                 [self sendActionsForControlEvents:UIControlEventValueChanged];
             }
+
             if (self.selectedIndex != NSNotFound)
             {
-                if ([self.delegate respondsToSelector:@selector(radialMenuButton:highlightedView:atIndex:)])
+                UIView *view = self.selectedIndex == HKRadialMenuButtonCenterIndex ? self.centerView : self.views[self.selectedIndex];
+                [self animateSelectionOnView:view];
+                if ([self.delegate respondsToSelector:@selector(radialMenuButton:unhighlightedView:atIndex:)])
                     [self.delegate radialMenuButton:self
-                                    highlightedView:self.selectedIndex == HKRadialMenuButtonCenterIndex ? self.centerView : self.views[self.selectedIndex]
+                                  unhighlightedView:view
                                             atIndex:self.selectedIndex];
             }
             [self hideViewsAnimated:YES];
@@ -365,6 +390,9 @@ static CGFloat CGSizeGetRadius(CGSize size)
 
     for (NSUInteger i = nbViews; i != 0; --i)
     {
+        if (i - 1 == self.selectedIndex)
+            continue;
+        
         UIView *view = [self.views objectAtIndex:i - 1];
         [self collapseView:view animated:animated];
     }

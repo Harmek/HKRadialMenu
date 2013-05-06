@@ -17,21 +17,12 @@
 
 @implementation HKViewController2
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
     UILabel *centerView = [[UILabel alloc] initWithFrame:CGRectZero];
-    centerView.text = @"Hold...";
+    centerView.text = @"Hold this";
     UILabel *view1 = [[UILabel alloc] initWithFrame:CGRectZero];
     view1.text = @"Button 1";
     UILabel *view2 = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -54,13 +45,6 @@
                                               [NSNumber numberWithFloat:-3 * M_PI_4]]];
     button.center = self.view.center;
     [self.view addSubview:button];
-	// Do any additional setup after loading the view.
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 @end
