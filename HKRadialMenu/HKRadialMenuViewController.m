@@ -29,6 +29,7 @@
 
 
 #import "HKRadialMenuViewController.h"
+#import "HKRadialGestureRecognizer.h"
 
 @interface HKRadialMenuViewController ()
 
@@ -51,6 +52,17 @@
     radialMenuView.animationDuration = 1;
     radialMenuView.backgroundColor = [UIColor whiteColor];
     self.view = radialMenuView;
+
+    HKRadialGestureRecognizer *recognizer = [[HKRadialGestureRecognizer alloc] initWithTarget:self action:@selector(radialGestureRecognizerChanged:)];
+    recognizer.innerRadius = 60;
+    recognizer.outerRadius = 150;
+    recognizer.angles = @[@0, [NSNumber numberWithFloat:M_PI_2], [NSNumber numberWithFloat:M_PI], [NSNumber numberWithFloat:3 * M_PI_2], [NSNumber numberWithFloat:2 * M_PI]];
+    [self.view addGestureRecognizer:recognizer];
+}
+
+- (void)radialGestureRecognizerChanged:(HKRadialGestureRecognizer *)recognizer
+{
+    NSLog(@"%d: %d", recognizer.state, recognizer.closestAngleIndex);
 }
 
 - (void)viewDidLoad

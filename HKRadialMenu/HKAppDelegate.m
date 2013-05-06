@@ -30,6 +30,7 @@
 #import "HKAppDelegate.h"
 
 #import "HKViewController.h"
+#import "HKViewController2.h"
 
 @implementation HKAppDelegate
 
@@ -38,7 +39,8 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     self.viewController = [[HKViewController alloc] init];
-    self.window.rootViewController = self.viewController;
+    //    self.window.rootViewController = self.viewController;
+    self.window.rootViewController = [[HKViewController2 alloc] init];
     [self.window makeKeyAndVisible];
     return YES;
 }

@@ -19,6 +19,9 @@
 		50583E2217235C1D0054BEBB /* HKViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50583E2117235C1D0054BEBB /* HKViewController.m */; };
 		50583E2D172360D60054BEBB /* HKRadialMenuView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50583E2C172360D60054BEBB /* HKRadialMenuView.m */; };
 		50583E33172388B30054BEBB /* HKRadialMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50583E32172388B30054BEBB /* HKRadialMenuViewController.m */; };
+		509A9F4A173719B700F55ED7 /* HKRadialGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 509A9F49173719B700F55ED7 /* HKRadialGestureRecognizer.m */; };
+		509A9F4D1737502600F55ED7 /* HKRadialMenuButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 509A9F4C1737502600F55ED7 /* HKRadialMenuButton.m */; };
+		509A9F501737A4A500F55ED7 /* HKViewController2.m in Sources */ = {isa = PBXBuildFile; fileRef = 509A9F4F1737A4A500F55ED7 /* HKViewController2.m */; };
 		509F86D517255566001F4F63 /* UIView+Resizing.m in Sources */ = {isa = PBXBuildFile; fileRef = 509F86D417255566001F4F63 /* UIView+Resizing.m */; };
 		50B882971724EB2C000C15E6 /* HKRadialMenuItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50B882961724EB2C000C15E6 /* HKRadialMenuItemView.m */; };
 		50C14B7A17268DB400834012 /* HKAnimatedRadialMenuItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = 50C14B7917268DB400834012 /* HKAnimatedRadialMenuItemView.m */; };
@@ -44,6 +47,12 @@
 		50583E2C172360D60054BEBB /* HKRadialMenuView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HKRadialMenuView.m; sourceTree = "<group>"; };
 		50583E31172388B30054BEBB /* HKRadialMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HKRadialMenuViewController.h; sourceTree = "<group>"; };
 		50583E32172388B30054BEBB /* HKRadialMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HKRadialMenuViewController.m; sourceTree = "<group>"; };
+		509A9F48173719B700F55ED7 /* HKRadialGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HKRadialGestureRecognizer.h; sourceTree = "<group>"; };
+		509A9F49173719B700F55ED7 /* HKRadialGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HKRadialGestureRecognizer.m; sourceTree = "<group>"; };
+		509A9F4B1737502600F55ED7 /* HKRadialMenuButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HKRadialMenuButton.h; sourceTree = "<group>"; };
+		509A9F4C1737502600F55ED7 /* HKRadialMenuButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HKRadialMenuButton.m; sourceTree = "<group>"; };
+		509A9F4E1737A4A500F55ED7 /* HKViewController2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HKViewController2.h; sourceTree = "<group>"; };
+		509A9F4F1737A4A500F55ED7 /* HKViewController2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HKViewController2.m; sourceTree = "<group>"; };
 		509F86D317255566001F4F63 /* UIView+Resizing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Resizing.h"; sourceTree = "<group>"; };
 		509F86D417255566001F4F63 /* UIView+Resizing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Resizing.m"; sourceTree = "<group>"; };
 		50B882951724EB2C000C15E6 /* HKRadialMenuItemView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HKRadialMenuItemView.h; sourceTree = "<group>"; };
@@ -102,6 +111,10 @@
 				50583E0F17235C1D0054BEBB /* Supporting Files */,
 				50C14B7517268D7800834012 /* Views */,
 				50C14B7617268D8900834012 /* Extensions */,
+				509A9F48173719B700F55ED7 /* HKRadialGestureRecognizer.h */,
+				509A9F49173719B700F55ED7 /* HKRadialGestureRecognizer.m */,
+				509A9F4B1737502600F55ED7 /* HKRadialMenuButton.h */,
+				509A9F4C1737502600F55ED7 /* HKRadialMenuButton.m */,
 			);
 			path = HKRadialMenu;
 			sourceTree = "<group>";
@@ -149,6 +162,8 @@
 				50583E2117235C1D0054BEBB /* HKViewController.m */,
 				50C14B7817268DB400834012 /* HKAnimatedRadialMenuItemView.h */,
 				50C14B7917268DB400834012 /* HKAnimatedRadialMenuItemView.m */,
+				509A9F4E1737A4A500F55ED7 /* HKViewController2.h */,
+				509A9F4F1737A4A500F55ED7 /* HKViewController2.m */,
 			);
 			name = Demo;
 			sourceTree = "<group>";
@@ -227,6 +242,9 @@
 				50B882971724EB2C000C15E6 /* HKRadialMenuItemView.m in Sources */,
 				509F86D517255566001F4F63 /* UIView+Resizing.m in Sources */,
 				50C14B7A17268DB400834012 /* HKAnimatedRadialMenuItemView.m in Sources */,
+				509A9F4A173719B700F55ED7 /* HKRadialGestureRecognizer.m in Sources */,
+				509A9F4D1737502600F55ED7 /* HKRadialMenuButton.m in Sources */,
+				509A9F501737A4A500F55ED7 /* HKViewController2.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
