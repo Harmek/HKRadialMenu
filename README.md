@@ -1,9 +1,13 @@
 HKRadialMenu
 ======================
 
-![Screenshot](Screenshot.png "HKRadialMenu")
+[![Screenshot](Screenshot.png "HKRadialMenuView")](http://youtu.be/2Jg81n-bLQQ) [![Screenshot2](Screenshot2.png "HKRadialMenuButton")](http://youtu.be/2Jg81n-bLQQ?t=20s)
 
-HKRadialMenu is an animated menu with an interactive central view that expands other peripherical interactive views.
+(Click on the images to see them in action)
+
+HKRadialMenu contains:
+1. An animated menu with an interactive central view that expands other peripherical interactive views.
+2. A button that expands other sub-buttons when pushed (à la Prismatic App).
 
 How to use it
 -------------
