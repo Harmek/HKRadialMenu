@@ -58,9 +58,10 @@ Read-only properties:
 
 Appearance properties (also accessible through [HKRadialMenuButton appearance]):
 
+* expansionDelay: time (in seconds) before the peripherical buttons start showing. Default value is 0.5.
 * autoRotate: if YES, the view will be viewed with its original rotation (very useful when using labels). Default value is YES.
-* animationDuration: the duration of the expansion animation. The selection (grow and fade) animation is (animationDuration / 2).
-* magnetismRatio: When a radial view becomes the active (and selectable) one, it moves slightly towards the center view at (magnetismRatio * distanceBetweenTheViews). Default value is 0.85.
+* animationDuration: the duration of the expansion animation. The selection (grow and fade) animation is (animationDuration / 2). Default value is 0.5.
+* magnetismRatio: When a radial view becomes the active (and selectable) one, it moves slightly towards the center view at (magnetismRatio * distanceBetweenTheViews). Default value is 0.95.
 
 HKRadialMenuButton can also have a delegate (with the _HKRadialMenuButtonDelegate_ protocol):
 

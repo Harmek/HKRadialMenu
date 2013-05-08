@@ -130,7 +130,7 @@ static CGFloat CGSizeGetRadius(CGSize size)
     self.autoRotate = YES;
     self.animationDuration = .5;
     self.selectedIndex = NSNotFound;
-    self.magnetismRatio = .85;
+    self.magnetismRatio = .95;
     self.expansionDelay = .25;
 }
 
