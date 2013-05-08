@@ -404,6 +404,11 @@ static CGFloat CGSizeGetRadius(CGSize size)
             [self hideViewsAnimated:YES];
             break;
         }
+        case UIGestureRecognizerStateCancelled:
+        {
+            [self hideViewsAnimated:YES];
+            break;
+        }
         default:
             break;
     }
