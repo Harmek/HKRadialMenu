@@ -54,6 +54,10 @@ static const NSInteger HKRadialMenuButtonCenterIndex = -1;
       andOtherViews:(NSArray *)views
           andAngles:(NSArray *)angles;
 
+@property (nonatomic) UIView *centerView;
+@property (nonatomic) NSArray *views;
+@property (nonatomic) NSArray *angles;
+
 @property (nonatomic, readonly) UIView      *backgroundView;
 @property (nonatomic, readonly) UIView      *contentView;
 @property (nonatomic, readonly) BOOL        isExpanded;

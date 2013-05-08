@@ -42,9 +42,6 @@ static CGFloat CGSizeGetRadius(CGSize size)
 @property (nonatomic) BOOL isExpanded;
 @property (nonatomic) NSInteger selectedIndex;
 
-@property (nonatomic) UIView *centerView;
-@property (nonatomic) NSArray *views;
-@property (nonatomic) NSArray *angles;
 @property (nonatomic) CGFloat radius;
 
 @property (nonatomic) HKRadialGestureRecognizer *gestureRecognizer;
@@ -139,6 +136,7 @@ static CGFloat CGSizeGetRadius(CGSize size)
     if (!_contentView)
     {
         _contentView = [[UIView alloc] initWithFrame:self.frame];
+        [_contentView setBackgroundColor:[UIColor clearColor]];
         [self addSubview:_contentView];
     }
 
@@ -150,6 +148,7 @@ static CGFloat CGSizeGetRadius(CGSize size)
     if (!_backgroundView)
     {
         _backgroundView = [[UIView alloc] initWithFrame:self.frame];
+        [_backgroundView setBackgroundColor:[UIColor clearColor]];
         [self addSubview:_backgroundView];
     }
 
@@ -165,6 +164,7 @@ static CGFloat CGSizeGetRadius(CGSize size)
         [_centerView removeFromSuperview];
     _centerView = centerView;
     [self.contentView addSubview:centerView];
+    [self setNeedsLayout];
 }
 
 - (void)setViews:(NSArray *)views
@@ -184,6 +184,7 @@ static CGFloat CGSizeGetRadius(CGSize size)
     {
         [self.contentView addSubview:view];
     }
+    [self setNeedsLayout];
 }
 
 - (HKRadialGestureRecognizer *)gestureRecognizer
@@ -206,8 +207,10 @@ static CGFloat CGSizeGetRadius(CGSize size)
         return;
 
     CGRect frame = self.frame;
-    self.contentView.frame = self.bounds;
     self.backgroundView.frame = self.bounds;
+    self.contentView.frame = self.bounds;
+    [self sendSubviewToBack:self.contentView];
+    [self sendSubviewToBack:self.backgroundView];
     CGFloat outerRadius = MIN(frame.size.width, frame.size.height) * .5;
     self.radius = outerRadius;
     frame = self.centerView.frame;
@@ -223,7 +226,7 @@ static CGFloat CGSizeGetRadius(CGSize size)
         .origin = {center.x - frame.size.width * .5, center.y - frame.size.height * .5},
         .size = frame.size
     };
-    
+
     for (UIView *view in self.views)
     {
         view.alpha = .0;
@@ -440,11 +443,11 @@ static CGFloat CGSizeGetRadius(CGSize size)
     {
         if (i - 1 == self.selectedIndex)
             continue;
-        
+
         UIView *view = [self.views objectAtIndex:i - 1];
         [self collapseView:view animated:animated];
     }
-
+    
     self.isExpanded = NO;
 }
 
