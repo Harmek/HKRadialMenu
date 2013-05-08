@@ -59,6 +59,7 @@ static const NSInteger HKRadialMenuButtonCenterIndex = -1;
 @property (nonatomic, readonly) BOOL        isExpanded;
 @property (nonatomic, readonly) NSInteger   selectedIndex;
 
+@property (nonatomic) NSTimeInterval    expansionDelay          UI_APPEARANCE_SELECTOR;
 @property (nonatomic) BOOL              autoRotate              UI_APPEARANCE_SELECTOR;
 @property (nonatomic) CFTimeInterval    animationDuration       UI_APPEARANCE_SELECTOR;
 @property (nonatomic) CGFloat           magnetismRatio          UI_APPEARANCE_SELECTOR;

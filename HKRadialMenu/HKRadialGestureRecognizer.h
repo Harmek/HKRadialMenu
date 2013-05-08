@@ -31,10 +31,12 @@
 
 @interface HKRadialGestureRecognizer : UIGestureRecognizer
 
+@property (nonatomic) NSTimeInterval        longTouchDelay;
 @property (nonatomic) CGFloat               innerRadius;
 @property (nonatomic) CGFloat               outerRadius;
 @property (nonatomic) NSArray               *angles;
 
 @property (nonatomic, readonly) NSInteger   closestAngleIndex;
+@property (nonatomic, readonly) BOOL        longTouched;
 
 @end

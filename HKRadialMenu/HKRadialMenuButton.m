@@ -128,9 +128,10 @@ static CGFloat CGSizeGetRadius(CGSize size)
 - (void)_defaultInit
 {
     self.autoRotate = YES;
-    self.animationDuration = 1;
+    self.animationDuration = .5;
     self.selectedIndex = NSNotFound;
     self.magnetismRatio = .85;
+    self.expansionDelay = .25;
 }
 
 - (UIView *)contentView
@@ -191,6 +192,7 @@ static CGFloat CGSizeGetRadius(CGSize size)
     {
         _gestureRecognizer = [[HKRadialGestureRecognizer alloc] initWithTarget:self
                                                                         action:@selector(gestureRecognizerUpdated:)];
+        _gestureRecognizer.longTouchDelay = self.expansionDelay;
         [self addGestureRecognizer:_gestureRecognizer];
     }
 
@@ -359,15 +361,23 @@ static CGFloat CGSizeGetRadius(CGSize size)
                                 highlightedView:self.centerView
                                         atIndex:HKRadialMenuButtonCenterIndex];
             self.selectedIndex = HKRadialMenuButtonCenterIndex;
-            [self revealViewsAnimated:YES];
+            if (recognizer.longTouched)
+            {
+                [self revealViewsAnimated:YES];
+            }
             break;
         }
         case UIGestureRecognizerStateChanged:
         {
-            if (self.selectedIndex != recognizer.closestAngleIndex)
+            if (recognizer.longTouched)
             {
-                [self animateMagnetismWithGestureRecognizer:recognizer];
-                self.selectedIndex = recognizer.closestAngleIndex;
+                if (!self.isExpanded)
+                    [self revealViewsAnimated:YES];
+                if (self.selectedIndex != recognizer.closestAngleIndex)
+                {
+                    [self animateMagnetismWithGestureRecognizer:recognizer];
+                    self.selectedIndex = recognizer.closestAngleIndex;
+                }
             }
             break;
         }

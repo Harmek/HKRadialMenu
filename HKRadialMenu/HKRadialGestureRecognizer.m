@@ -30,6 +30,11 @@
 #import "HKRadialGestureRecognizer.h"
 #import <UIKit/UIGestureRecognizerSubclass.h>
 
+static CGFloat CGPointDotProduct(CGPoint p1, CGPoint p2)
+{
+    return (p1.x * p2.x + p1.y * p2.y);
+}
+
 static CGPoint CGPointSubtract(CGPoint p1, CGPoint p2)
 {
     CGFloat dx = p1.x - p2.x;
@@ -40,7 +45,7 @@ static CGPoint CGPointSubtract(CGPoint p1, CGPoint p2)
 
 static CGFloat CGPointLengthSq(CGPoint p)
 {
-    return (p.x * p.x + p.y * p.y);
+    return CGPointDotProduct(p, p);
 }
 
 static CGFloat CGPointLength(CGPoint p)
@@ -85,7 +90,9 @@ static CGFloat CGFloatNormalizeAngle(CGFloat angle)
 @property (nonatomic) NSInteger closestAngleIndex;
 @property (nonatomic) CGFloat innerRadiusSq;
 @property (nonatomic) CGFloat outerRadiusSq;
-
+@property (nonatomic) NSTimer *longTouchTimer;
+@property (nonatomic) NSInteger savedClosestAngleIndex;
+@property (nonatomic) BOOL longTouched;
 @end
 
 @implementation HKRadialGestureRecognizer
@@ -94,6 +101,8 @@ static CGFloat CGFloatNormalizeAngle(CGFloat angle)
 {
     [super reset];
     self.closestAngleIndex = NSNotFound;
+    self.savedClosestAngleIndex = NSNotFound;
+    self.longTouched = NO;
 }
 
 - (NSArray *)angles
@@ -142,9 +151,32 @@ static CGFloat CGFloatNormalizeAngle(CGFloat angle)
     CGFloat distanceSq = CGPointDistanceSq(viewCenter, tapPoint);
     if (distanceSq < self.innerRadiusSq)
     {
+        self.savedClosestAngleIndex = -1;
         _closestAngleIndex = -1;
         self.state = UIGestureRecognizerStateBegan;
+        if (self.longTouchTimer)
+        {
+            [self.longTouchTimer invalidate];
+            self.longTouchTimer = nil;
+        }
+        self.longTouched = NO;
+        self.longTouchTimer = [NSTimer scheduledTimerWithTimeInterval:self.longTouchDelay
+                                                               target:self
+                                                             selector:@selector(timerFired:)
+                                                             userInfo:nil
+                                                              repeats:NO];
     }
+}
+
+- (void)timerFired:(NSTimer *)timer
+{
+    if (self.savedClosestAngleIndex != NSNotFound)
+    {
+        self.closestAngleIndex = self.savedClosestAngleIndex;
+        self.savedClosestAngleIndex = NSNotFound;
+    }
+    self.longTouched = YES;
+    self.state = UIGestureRecognizerStateChanged;
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
@@ -159,19 +191,20 @@ static CGFloat CGFloatNormalizeAngle(CGFloat angle)
     CGFloat distanceSq = CGPointLengthSq(vector);
     vector = CGPointNormalize(vector);
 
+    NSInteger closestAngleIndex = NSNotFound;
     if (distanceSq > self.outerRadiusSq)
     {
-        self.closestAngleIndex = NSNotFound;
+        closestAngleIndex = NSNotFound;
     }
     else if (distanceSq > self.innerRadiusSq)
     {
         CGFloat currentAngle = CGFloatNormalizeAngle(atan2(vector.y, vector.x));
         CGFloat smallestDelta = FLT_MAX;
-        NSInteger closestAngleIndex = NSNotFound;
         NSInteger i = 0;
         for (NSNumber *angle in self.angles)
         {
-            CGFloat delta = fabs(currentAngle - CGFloatNormalizeAngle(angle.floatValue));
+            CGFloat angleValue = CGFloatNormalizeAngle(angle.floatValue);
+            CGFloat delta = fabs(currentAngle - angleValue);
             if (delta < smallestDelta)
             {
                 smallestDelta = delta;
@@ -180,17 +213,25 @@ static CGFloat CGFloatNormalizeAngle(CGFloat angle)
 
             ++i;
         }
-        self.closestAngleIndex = closestAngleIndex;
+        closestAngleIndex = closestAngleIndex;
     }
     else
     {
-        self.closestAngleIndex = -1;
+        closestAngleIndex = -1;
     }
+
+    if (self.longTouched)
+        self.closestAngleIndex = closestAngleIndex;
+    else
+        self.savedClosestAngleIndex = closestAngleIndex;
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [super touchesEnded:touches withEvent:event];
+
+    [self.longTouchTimer invalidate];
+    self.longTouchTimer = nil;
     
     UITouch *touch = [touches anyObject];
     CGPoint tapPoint = [touch locationInView:self.view];
